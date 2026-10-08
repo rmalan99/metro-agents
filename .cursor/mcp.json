@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "todo-mcp": {
+      "command": "node",
+      "args": [
+        "/home/queso/.cursor-server/extensions/hurtis.todo-2.0.0-universal/bin/todo-mcp.js",
+        "--workspace",
+        "/home/queso/work/personal/metro-agents"
+      ]
+    }
+  }
+}
