@@ -58,6 +58,10 @@ Avoid deeply nested ternaries.
 
 The existing design system is the source of truth.
 
+Apply the shared visual contract from `frontend-developer`; React-specific implementation belongs here and in the selected UI reference routed by `react-core`. For a platform-wide style adjustment, change the native theme/tokens and component defaults before local screens. For a local composition, keep the adjustment local. Do not create a parallel token system or repeatedly patch each component instance.
+
+Verify provider placement and style inheritance for dialogs, menus and other portals. In server-rendered frameworks, follow the installed framework/library's style integration and client-boundary guidance; do not make the whole application client-rendered merely to theme a control.
+
 ## MUST
 
 - Reuse existing UI primitives.

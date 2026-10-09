@@ -1,6 +1,6 @@
 ---
 name: react-core
-version: 2.1.0
+version: 2.2.0
 description: Compact core of the React Frontend Developer standard. Contains always-on React rules and an index that routes deeper topics to child skills derived from the original skill.
 ---
 
@@ -9,6 +9,8 @@ description: Compact core of the React Frontend Developer standard. Contains alw
 ## Purpose
 
 Use this skill as the **main React skill**. It is the compact entry point for the full React Frontend Developer standard.
+
+For frontend work, load `../../frontend-developer/SKILL.md` as the framework-independent base. This skill translates that contract into React; it does not own a second visual system or a competing architecture. If the base was already loaded, do not reload it unnecessarily.
 
 It must stay small. Its job is to:
 
@@ -52,6 +54,27 @@ Do **not** load every child skill by default. Do **not** introduce a library, fr
 ---
 
 ## How to use the child skills
+
+### UI system selection and integration
+
+The selection behavior belongs to `frontend-developer`; React owns compatible options and integration. Inspect the actual React framework, installed versions, stylesheet strategy, providers and adopted UI components before deciding.
+
+- Keep the existing system or explicit user choice. If no choice exists, ask through the authorized channel before setup; do not repeatedly ask after selection.
+- Offer compatible approaches: MUI, shadcn/ui, Chakra UI, Tailwind without a component library, or plain CSS. MUI/Chakra provide themed components; shadcn supplies project-owned component code; Tailwind/CSS provide styling, not full interactive behavior.
+- Load only `references/ui/<selected-system>.md` for setup, shared styling or library-specific component work. Do not preload all five guides.
+- Establish native theme/tokens and application-level providers only where required. Respect server/client boundaries, style insertion, portal inheritance and hydration in the installed framework.
+- Use the existing hooks, modules and data tools to implement the base's ownership rules. Derived state stays derived; Effects synchronize external systems.
+- Before adding dependencies, review compatibility, maintenance and the actual missing capability. Preserve the current dependency policy.
+
+| Selected system | Reference |
+|---|---|
+| MUI | `references/ui/mui.md` |
+| shadcn/ui | `references/ui/shadcn.md` |
+| Chakra UI | `references/ui/chakra.md` |
+| Tailwind without component library | `references/ui/tailwind.md` |
+| Plain CSS | `references/ui/css.md` |
+
+References are version-aware procedures, not permission to migrate the application. Consult the installed version's official documentation for exact APIs when needed.
 
 Start with this file. Inspect the task and the affected code. Then use the index below to load **only** the child skill that owns the relevant concept.
 
