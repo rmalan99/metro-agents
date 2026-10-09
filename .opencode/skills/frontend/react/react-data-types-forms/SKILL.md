@@ -94,15 +94,14 @@ Prefer `unknown` over `any` for untrusted data, followed by validation/narrowing
 
 Forms must have a clear source of truth and validation strategy.
 
-Apply `../../frontend-forms/SKILL.md` as the tool-independent behavioral contract. For React integration load `references/form-integration.md` only when implementing forms/field adapters; do not introduce a form or schema library implicitly.
+The general frontend skill owns form behavior and reference selection. This React module only supplies data/type integration constraints; implement the active frontend contract through the existing React form tools without redefining validation, field anatomy or specialized controls.
 
 ## Rules
 
 - Follow the project's existing form library if one exists.
 - Avoid maintaining the same field value simultaneously in several state systems.
 - Validate required business rules before submission.
-- Show applicable field errors below their controls, reactively when dirty/touched and after invalid submission/server validation. Use shared danger states for border, label and error text; preserve helper/placeholder, required markers and accessible relationships.
-- Map backend field paths to registered controls; after failed submission reveal/focus the first invalid reachable field. Do not move focus during typing.
+- Follow the active frontend contract for field feedback and submission behavior. Forward value, change, blur and control references through React adapters without duplicating state.
 - Preserve user input when a recoverable request fails.
 - Disable duplicate submissions while a request is pending when appropriate.
 - Do not rely only on client-side validation for security/business enforcement; backend validation remains required.
