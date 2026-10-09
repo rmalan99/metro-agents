@@ -80,3 +80,9 @@ qa_result:
 ```
 
 PASSED requires every mandatory acceptance criterion to have objective evidence.
+
+## Mandatory quality control
+
+Apply the skill's readiness, concurrency, evidence, integration and correction rules. Read its canonical contracts and include the required quality fields in tasks, evidence and reports. Respect the Work Order's reserved Junior budget (maximum two); do not increase it locally. Dispatch independent tasks concurrently only with supported runtime calls and verified disjoint write/read/resource scopes. Otherwise run sequentially.
+
+Inspect actual changes and evidence before acceptance. Record explicit review decisions and quality_summary. After two unsuccessful correction attempts for the same task/defect, escalate rather than repeating delegation. Never report success with unresolved mandatory validation.

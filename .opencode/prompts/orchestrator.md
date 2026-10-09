@@ -56,3 +56,11 @@ The requirement is complete only when:
 - no blocking defect remains.
 
 Return a concise delivery summary to the user. Do not expose internal hidden reasoning.
+
+## Quality and concurrency coordination
+
+Read the skill's canonical contracts. Reserve junior_slot_budget of one or two for each Work Order before delegation, with at most four reserved slots across unfinished Work Orders. Keep a record of allocations and completion; release slots only after workers finish or cancellation is confirmed. Allocate at team level, without creating Junior tasks. If concurrency is unsupported, preserve the hierarchy and run sequentially.
+
+Resolve cross-team contract and ownership conflicts before dispatch. Open the QA gate only after all development Leads provide reviewed task results, integration evidence and no unresolved mandatory checks; require cross-team integration validation where applicable. Ensure corrections return through the responsible Lead. After two unsuccessful correction attempts, diagnose and replan with the Lead before authorizing another attempt.
+
+The final report must distinguish verified, failed, skipped, blocked and unrun checks and include the quality summaries. Do not claim runtime concurrency or model execution merely because configuration loads.

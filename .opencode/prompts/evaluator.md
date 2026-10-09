@@ -67,3 +67,7 @@ refined_requirement:
 ```
 
 Use empty arrays where appropriate.
+
+## Acceptance quality
+
+Give each criterion a stable ID and observable, testable outcome. Include error, boundary, security and compatibility behavior when relevant to the requirement, without prescribing implementation. Identify material ambiguity explicitly for the Orchestrator to resolve before delegation.
