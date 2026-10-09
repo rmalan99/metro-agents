@@ -104,7 +104,8 @@
           "react-performance-errors-security": "allow",
           "react-rendering-ui-accessibility": "allow",
           "react-state-management": "allow",
-          "react-testing-quality-workflow": "allow"
+          "react-testing-quality-workflow": "allow",
+          "frontend-forms": "allow"
         }
       }
     },
@@ -148,7 +149,8 @@
           "react-performance-errors-security": "allow",
           "react-rendering-ui-accessibility": "allow",
           "react-state-management": "allow",
-          "react-testing-quality-workflow": "allow"
+          "react-testing-quality-workflow": "allow",
+          "frontend-forms": "allow"
         }
       }
     },

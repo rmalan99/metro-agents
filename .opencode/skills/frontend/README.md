@@ -17,6 +17,7 @@ For React work, also load `react-core`. It translates the base into React and ro
 | React entry and UI integration | `react/react-core/SKILL.md` |
 | React concepts | Relevant existing child from the `react-core` index |
 | Tables/lists in any application | `frontend-tables/SKILL.md` |
+| Forms/fields in any application | `frontend-forms/SKILL.md` |
 | Administrative composition | `backoffice-design/SKILL.md` |
 | Administrative metrics/charts | `backoffice-dashboards/SKILL.md` |
 
@@ -27,6 +28,7 @@ The five UI implementation references live under `react/react-core/references/ui
 - `react-state-management` — ownership, state shape and sharing.
 - `react-hooks-effects-events` — Hooks, synchronization and events.
 - `react-data-types-forms` — APIs, typing and forms.
+- `react-data-types-forms/references/form-integration.md` — React adapters for the shared reactive form contract; loaded only for form work.
 - `react-rendering-ui-accessibility` — lists, rendering, styles and accessibility.
 - `react-performance-errors-security` — performance, errors and security.
 - `react-testing-quality-workflow` — testing, dependency policy and delivery.
