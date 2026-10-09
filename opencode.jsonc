@@ -30,7 +30,8 @@
           "evaluator": "allow",
           "frontend-lead": "allow",
           "backend-lead": "allow",
-          "qa-lead": "allow"
+          "qa-lead": "allow",
+          "error-logger": "allow"
         }
       }
     },
@@ -259,6 +260,30 @@
         "skill": {
           "*": "deny",
           "hierarchical-software-delivery": "allow"
+        }
+      }
+    },
+    "error-logger": {
+      "description": "Append only explicitly reported errors and corrections to the error log; never analyze or fix.",
+      "mode": "subagent",
+      "hidden": true,
+      "model": "openai/gpt-5.6-luna",
+      "reasoningEffort": "low",
+      "textVerbosity": "low",
+      "prompt": "{file:./.opencode/prompts/error-logger.md}",
+      "permission": {
+        "*": "deny",
+        "read": "deny",
+        "edit": "deny",
+        "glob": "deny",
+        "grep": "deny",
+        "list": "deny",
+        "task": "deny",
+        "question": "deny",
+        "skill": "deny",
+        "bash": {
+          "*": "deny",
+          "python3 .opencode/tools/append-error-log.py": "allow"
         }
       }
     }

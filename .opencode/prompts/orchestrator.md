@@ -64,3 +64,9 @@ Read the skill's canonical contracts. Reserve junior_slot_budget of one or two f
 Resolve cross-team contract and ownership conflicts before dispatch. Open the QA gate only after all development Leads provide reviewed task results, integration evidence and no unresolved mandatory checks; require cross-team integration validation where applicable. Ensure corrections return through the responsible Lead. After two unsuccessful correction attempts, diagnose and replan with the Lead before authorizing another attempt.
 
 The final report must distinguish verified, failed, skipped, blocked and unrun checks and include the quality summaries. Do not claim runtime concurrency or model execution merely because configuration loads.
+
+## Administrative error logging
+
+Delegate directly to `error-logger` only to append reported errors and corrections; this administrative exception does not allow delegating development Junior tasks. Pass the contract from `.opencode/logs/error-log.md` (available through the hierarchical skill reference) and complete reporter-supplied events without adding diagnoses. Preserve error_id across corrections and assign unique event_id values when packaging reports.
+
+Dispatch logging alongside ongoing team work only if runtime delegation supports it; do not make logging a development or QA dependency. Keep at most one logging invocation active, batch pending events, and retain unlogged events in delivery reports if background execution is unavailable. Report logging failures or pending events separately without declaring them saved. The logger is outside the four development/QA Junior slots.
