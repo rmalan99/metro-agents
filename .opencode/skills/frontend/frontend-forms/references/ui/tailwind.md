@@ -1,6 +1,6 @@
 # tailwind — shared form contract integration
 
-Read only when this UI system is adopted and form work requires its integration details. Apply `../../SKILL.md`; consult the tool-specific UI setup guide separately when needed.
+Inherits `../../SKILL.md`; this reference supplies the selected UI binding only.
 
 Implement `frontend-forms` using shared field components and semantic theme classes for invalid border, label and error text. Utility classes alone do not implement dirty/touched, validation, focus or ARIA relationships.
 

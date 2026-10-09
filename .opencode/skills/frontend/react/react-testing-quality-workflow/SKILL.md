@@ -1,339 +1,42 @@
 ---
 name: react-testing-quality-workflow
-version: 2.2.0
-description: Testing strategy, code-quality rules, dependency policy, implementation workflow, review checklist, anti-patterns, decision rules, Definition of Done, and guiding principles.
+version: 2.3.0
+description: React-specific testing: harness providers, rerender identity, Effects and Strict Mode, asynchronous updates, mocks and regression coverage. General quality and selector contracts remain in frontend.
 ---
 
-# React Testing, Quality, and Workflow
+# React Testing Integration
 
 ## Scope
+Child of `react-core`. Inherit the frontend verification and selector contracts; do not restate their workflow, dependency policy, completion criteria or identifier rules here. Use the existing runner and installed versions.
 
-This is a child skill of `react-core`. Load it only when the current React task involves the concepts covered here.
+## Build the correct test boundary
+- Pure reducers/mappers can be exercised without rendering React.
+- Component integration tests render the owning component with the providers it actually requires.
+- Route-level tests include the existing router/data context; do not substitute a mock route that changes production behavior.
+- Share a render harness when provider setup genuinely repeats. Keep required inputs explicit; an all-purpose harness must not silently authenticate every test.
+- Reuse the existing request mock/server fixture strategy. Reset handlers, store/query cache and component mounts between tests to avoid order-dependent results.
 
-It expands sections 22, 23, 24, 25, 26, 27, 28, 29, 30 of the original React Frontend Developer skill. It does not introduce additional libraries or technologies beyond what those concepts require. Existing project choices remain authoritative.
+Do not add a second test framework because a library example uses it.
 
----
+## React-specific behavior to exercise
+### Props, identity and state
+Rerender with changed props to detect state incorrectly copied from inputs. Reorder mutable lists and verify state stays with record identity; use the inherited selector contract to locate instances. Exercise provider replacement/reset when page ownership changes.
 
-## 22. Testing Strategy
+### Effects and external systems
+Mount/unmount the component and check subscription/timer/request cleanup. Test changing relevant dependencies; an old callback/result must not update the new owner. If Strict Mode is part of the application/test harness, check its development setup/cleanup cycle rather than asserting one incidental Effect invocation.
 
-Test observable behavior rather than implementation details.
+### Event and asynchronous updates
+Use the runner's React-aware interaction/render utilities and wait for observable transitions. Assert pending and completed/failed outcomes when relevant. Do not make tests pass through arbitrary sleeps or blanket suppression of scheduler/act warnings.
 
-Follow the project's test stack. A typical React stack may include Vitest/Jest, React Testing Library, and Playwright/Cypress.
+When testing debounce/timers, use supported fake timers deliberately, advance them through the React-aware harness and restore real timers afterward. Use controlled delayed responses to reproduce out-of-order completion.
 
-## Unit tests
+### Controlled/uncontrolled bindings
+Check that custom components preserve onChange/onBlur/ref bindings and do not register fields twice. Form behavior is owned by the frontend form contract; this skill tests the React binding, not a second definition of validation rules.
 
-Use for:
+### Error boundaries
+Exercise a render failure through the actual error boundary and its reset mechanism. Request/event errors need their own handling path; do not assume an error boundary catches them.
 
-- Pure transformations.
-- Validation.
-- Reducers.
-- Complex utilities.
+## Test review
+Identify which React regression each new test detects: stale closure, render mutation, lost identity, missing cleanup, duplicated ownership or broken binding. Avoid tests that only inspect a Hook's internal state or compare an implementation constant with itself.
 
-## Component/integration tests
-
-Validate:
-
-- What the user sees.
-- What the user can interact with.
-- State transitions.
-- Validation/error feedback.
-- API-driven UI states where practical.
-
-Prefer queries based on accessible roles, labels, and visible text over implementation-specific selectors.
-
-Apply `../../frontend-developer/references/test-identifiers.md` for the stable generated-UI selector contract. Use `data-testid` for deterministic targeting and scope repeated controls to their stable instance; use roles/labels and accessible-name assertions to verify semantics. These serve different purposes and neither replaces behavioral assertions.
-
-Before writing a new selector, inspect development's handed-off patterns and actual rendered attributes. Do not duplicate selector discovery, use positional fallbacks to mask ambiguity or treat missing attributes as a reason to weaken a test. Verify forwarding through custom/library components, conditional states and portals. Report missing/unstable required identifiers as defects rather than editing production UI from QA.
-
-## E2E tests
-
-Use for critical workflows crossing several screens/services.
-
-Examples:
-
-- Login.
-- Checkout/payment.
-- Application submission.
-- Critical approval flows.
-
-## For every bug fix
-
-When practical, add a regression test that fails before the fix and passes after it.
-
----
-
----
-
-## 23. Code Quality Rules
-
-## MUST
-
-- Use descriptive names.
-- Keep business rules explicit.
-- Remove dead code introduced or made obsolete by the change.
-- Keep comments focused on **why**, not restating what obvious code does.
-- Respect formatter/linter rules.
-- Keep public component/hook APIs small.
-- Prefer early returns when they improve readability.
-
-## MUST NOT
-
-- Leave commented-out code.
-- Leave debug logs.
-- Leave temporary fake data unless explicitly required.
-- Suppress TypeScript/ESLint errors without documenting a justified reason.
-- Copy/paste large logic blocks when an existing abstraction already owns that responsibility.
-- Create a generic abstraction before there is a demonstrated reusable concept.
-
----
-
----
-
-## 24. Dependency Policy
-
-Before installing a dependency:
-
-1. Check whether the project already solves the problem.
-2. Check whether native browser/React capabilities are sufficient.
-3. Determine whether the dependency is maintained and compatible with the project.
-4. Evaluate bundle/runtime impact when relevant.
-5. Confirm it is necessary for the requirement.
-
-Do not replace an existing library ecosystem during a feature implementation without an explicit architectural decision.
-
----
-
----
-
-## 25. Implementation Workflow
-
-The React developer follows this sequence.
-
-## Step 1 — Understand
-
-Translate the assigned task into concrete UI behavior and acceptance conditions.
-
-## Step 2 — Inspect
-
-Read the related code before editing.
-
-## Step 3 — Design the change
-
-Identify:
-
-- Components affected.
-- State ownership and scope: local, lifted, Context, URL, Redux, or server state.
-- Data flow and domain boundaries.
-- API interaction.
-- Validation.
-- Error/loading/empty states.
-- Tests required.
-
-## Step 4 — Implement incrementally
-
-Make the smallest coherent change first.
-
-Keep each modification reviewable.
-
-## Step 5 — Verify locally
-
-Verify:
-
-- TypeScript.
-- Lint.
-- Relevant automated tests.
-- Build when appropriate.
-- Main user flow.
-- Error/empty/loading states.
-- Responsive behavior when UI is affected.
-- Keyboard/accessibility behavior for interactive UI.
-
-## Step 6 — Review the diff
-
-Before declaring completion, inspect the final diff for:
-
-- Accidental changes.
-- Duplicated logic.
-- Dead code.
-- Missing edge cases.
-- Debug statements.
-- Incorrect types.
-- Unnecessary abstractions.
-
-## Step 7 — Report result
-
-Return a concise implementation report containing:
-
-```text
-Result
-- What was implemented.
-
-Files changed
-- Relevant files only.
-
-Validation
-- Tests/checks executed and results.
-
-Important decisions
-- Architecture/state/data-flow decisions that matter to reviewers.
-
-Remaining risks / blockers
-- Only when applicable.
-```
-
----
-
----
-
-## 26. Pull Request / Review Checklist
-
-Before considering React work complete, verify:
-
-- [ ] Requirement is fully implemented.
-- [ ] Existing project conventions are respected.
-- [ ] Large components were reviewed for meaningful subcomponent boundaries.
-- [ ] Components remain pure during render.
-- [ ] State has one clear source of truth.
-- [ ] State uses the smallest correct ownership scope.
-- [ ] Prop drilling is avoided when a page/domain Context is the clearer boundary.
-- [ ] Redux is reserved for truly cross-module/application state.
-- [ ] Contexts represent coherent page/feature/domain concerns and are not oversized catch-all providers.
-- [ ] Redux access uses typed hooks/selectors when Redux is present.
-- [ ] No avoidable duplicated/derived state exists.
-- [ ] Effects are used only when justified.
-- [ ] Effect dependencies and cleanup are correct.
-- [ ] Hooks follow React rules.
-- [ ] Lists use stable keys.
-- [ ] Types are meaningful and no unjustified `any` was added.
-- [ ] Loading/error/empty/success states are handled where applicable.
-- [ ] Form validation and duplicate-submit behavior are correct where applicable.
-- [ ] Accessibility is preserved.
-- [ ] Responsive behavior is preserved.
-- [ ] No secrets/sensitive data were exposed.
-- [ ] No unnecessary dependency was added.
-- [ ] Tests cover the important behavior.
-- [ ] Generated DOM elements carry stable `data-testid` values under the shared contract, with scoped repeated instances and documented exceptions.
-- [ ] Rendered identifier placement, scope uniqueness and state/reorder stability were verified where relevant; unexecuted checks are explicit.
-- [ ] Selector patterns and any renames are handed off to QA without replacing role/label or behavioral checks.
-- [ ] Regression test exists for a bug fix when practical.
-- [ ] Lint/typecheck/tests pass.
-- [ ] No debug code remains.
-- [ ] Diff contains no unrelated refactor.
-
----
-
----
-
-## 27. Anti-Patterns
-
-The developer must actively reject these patterns unless an exceptional case is explicitly justified.
-
-### Effect-driven derived state
-
-```tsx
-useEffect(() => {
-  setFilteredItems(items.filter(matchesFilter));
-}, [items, filter]);
-```
-
-Prefer deriving the value during render.
-
-### State mutation
-
-```tsx
-user.name = 'New Name';
-setUser(user);
-```
-
-Create a new value instead.
-
-### Random render keys
-
-```tsx
-<Item key={Math.random()} />
-```
-
-Use stable identity.
-
-### Index key for mutable list
-
-```tsx
-items.map((item, index) => <Item key={index} />)
-```
-
-Use an item ID when list identity can change.
-
-### Global state by default
-
-Do not move a modal toggle, field value, page-detail resource, or local selection into the global store simply because a store exists.
-
-### Prop drilling through unrelated components
-
-Do not pass a domain resource through several components that do not use it only so a deeply nested section can access it. Prefer a focused page/feature Context when that data belongs to the subtree.
-
-### Oversized Context
-
-Do not create a single context that contains every piece of state, query, mutation, modal, form value, permission, and helper for a page or feature. Split by coherent domain or update responsibility when necessary.
-
-### Redux as a page-detail cache
-
-Do not promote a resource to Redux only because multiple sections of one detail page consume it. Keep page-scoped data page-scoped unless other unrelated modules truly need to own/read/update it.
-
-### Premature abstraction
-
-Do not convert a one-use 10-line component into a highly configurable framework without a real reuse case.
-
-### Premature optimization
-
-Do not use memoization everywhere without evidence or a clear render-boundary reason.
-
-### Suppressing dependency warnings
-
-Do not disable `exhaustive-deps` simply to make a warning disappear.
-
----
-
----
-
-## 28. Decision Rules
-
-When several technically valid options exist, prefer in this order:
-
-1. Existing project convention.
-2. Simpler React-native pattern.
-3. Smaller state surface.
-4. Clearer source of truth.
-5. Easier testability.
-6. Lower coupling.
-7. Lower dependency cost.
-8. Performance optimization only after correctness and clarity unless performance is itself the requirement.
-
----
-
----
-
-## 29. Definition of Done
-
-A React task is complete only when:
-
-1. The requested behavior works.
-2. The implementation follows existing project architecture.
-3. State and data flow are understandable.
-4. No unnecessary Effects or duplicated state were introduced.
-5. The UI handles relevant user states.
-6. Type safety is maintained.
-7. Accessibility is not degraded.
-8. Relevant tests pass.
-9. Typecheck/lint/build checks required by the project pass.
-10. No unrelated code changes are included.
-11. The final implementation can be reviewed without hidden assumptions.
-
----
-
----
-
-## 30. Guiding Principle
-
-> Build the simplest React solution that has one clear source of truth, keeps rendering pure, keeps side effects explicit, follows the project's architecture, and remains easy to test and change.
-
----
+Apply the frontend reporting and acceptance requirements unchanged. If a product/selector contract is unavailable to the test harness, report that limitation through the assigned workflow rather than modifying production code from QA.

@@ -8,7 +8,7 @@ Load `frontend-developer` for framework-independent discovery, shared visual con
 
 If a required technology choice is absent from the task and project, report BLOCKED to the Lead rather than installing a library. Do not load unrelated skills or extend the assigned scope.
 
-Apply `.opencode/skills/frontend/frontend-developer/references/test-identifiers.md` to every DOM element explicitly generated within the assigned UI scope. Preserve existing IDs, forward them to rendered elements and scope repeated instances. Report selector patterns, changes/exceptions and actual rendered verification to the Lead; do not relabel unrelated legacy UI.
+For generated-UI work, use `.opencode/skills/frontend/frontend-developer/references/test-identifiers.md` and return its task-specific selector evidence/handoff to the Lead.
 
 You receive exactly one bounded task from `frontend-lead`.
 

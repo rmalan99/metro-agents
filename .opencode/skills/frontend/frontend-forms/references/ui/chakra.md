@@ -1,6 +1,6 @@
 # chakra — shared form contract integration
 
-Read only when this UI system is adopted and form work requires its integration details. Apply `../../SKILL.md`; consult the tool-specific UI setup guide separately when needed.
+Inherits `../../SKILL.md`; this reference supplies the selected UI binding only.
 
 Apply `frontend-forms` with the installed major's field composition. In v2 inspect FormControl/label/helper/error APIs; in v3 inspect compound Field/recipe APIs. Do not mix their prop names. Bind required/invalid metadata and consistent danger treatment to the whole field anatomy.
 

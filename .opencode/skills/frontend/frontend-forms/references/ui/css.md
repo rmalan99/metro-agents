@@ -1,6 +1,6 @@
 # css — shared form contract integration
 
-Read only when this UI system is adopted and form work requires its integration details. Apply `../../SKILL.md`; consult the tool-specific UI setup guide separately when needed.
+Inherits `../../SKILL.md`; this reference supplies the selected UI binding only.
 
 Implement `frontend-forms` with shared semantic markup and classes/data attributes for invalid field state. Apply the danger token to border, label and message; preserve the independent focus-visible rule. Associate helper/error nodes with the control.
 

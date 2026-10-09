@@ -1,6 +1,6 @@
 ---
 name: react-state-management
-version: 2.1.0
+version: 2.3.0
 description: State ownership and scope: derived values, local state, lifted state, Context, URL state, Redux, server-state ownership, and state structure.
 ---
 
@@ -10,31 +10,12 @@ description: State ownership and scope: derived values, local state, lifted stat
 
 This is a child skill of `react-core`. Load it only when the current React task involves the concepts covered here.
 
-It expands sections 7, 8 of the original React Frontend Developer skill. It does not introduce additional libraries or technologies beyond what those concepts require. Existing project choices remain authoritative.
 
 ---
 
 ## 7. State Management and Data Ownership
 
-Choose state by **ownership, scope, lifecycle, and source of truth**.
-
-The default hierarchy is:
-
-```text
-Derived value
-    ↓
-Local component state
-    ↓
-Closest common parent / lifted state
-    ↓
-Page or feature Context
-    ↓
-URL state
-    ↓
-Redux / application-global state
-```
-
-This hierarchy is not a rigid sequence that every value must pass through. It is a decision model: keep the value in the smallest scope that correctly represents its ownership.
+The frontend base owns scope/lifetime/source-of-truth decisions. Map those decisions to the React mechanisms below. The existence of Context or a store is not an ownership decision.
 
 ## 7.1 Derived values
 
@@ -101,24 +82,10 @@ Typical examples:
 - A table feature whose filters/actions are consumed by several descendants.
 - A form section shared by many deeply nested field components when the form library does not already provide its own context.
 
-### Detail-page pattern
+### Page-owned Context integration
 
-A resource detail page normally loads or receives one main domain resource and composes several specialized sections.
+For a resource consumed throughout a page subtree, expose the existing resource through a domain provider:
 
-```text
-PropertyDetailPage
-  ├── PropertyHeader
-  ├── OwnerInformation
-  ├── PropertyDescription
-  ├── AccessKeysSection
-  ├── AmenitiesSection
-  ├── PropertyDocuments
-  └── PropertyHistory
-```
-
-If all or most of those sections need information from the same `property`, do not pass the full object through every layer of the tree merely to reach them.
-
-Prefer a domain provider:
 
 ```tsx
 function PropertyDetailPage() {
@@ -241,7 +208,7 @@ The loaded property belongs to that page/domain subtree, so Context is normally 
 - Do not place a page-detail resource in Redux only because many children need it; Context is normally the better page-scoped boundary.
 - Do not duplicate server/query cache data in Redux when the project's server-state solution already owns it.
 
-Recommended typed hooks:
+Example typed hooks when the installed React Redux version supports withTypes; otherwise use that version's typed-hook pattern:
 
 ```tsx
 // app/hooks.ts
@@ -291,24 +258,6 @@ A Context may expose a resource already owned by a query to page descendants wit
 
 ---
 
-## 7.8 State ownership decision table
-
-| Need | Preferred owner |
-| --- | --- |
-| Value can be calculated from existing data | Derived value |
-| Used by one independent component | Local state |
-| Shared by a few siblings | Closest common parent |
-| Shared deeply inside one page/feature/domain | Context |
-| Belongs to navigation/shareable URL | Route/search params |
-| Shared across unrelated pages/modules | Redux/global store |
-| Remote resource/cache lifecycle | Server-state/query layer |
-
-### Governing rule
-
-> State belongs to the smallest domain that truly owns it. Do not promote data to a broader scope only for convenience.
-
----
-
 ## 8. State Structure Rules
 
 State should be minimal and normalized.
@@ -331,7 +280,5 @@ instead of duplicating the complete selected user if that user already exists in
 Group values that represent one logical transition when doing so reduces inconsistent states.
 
 For complex state transitions, prefer `useReducer` over many interdependent `useState` calls.
-
----
 
 ---

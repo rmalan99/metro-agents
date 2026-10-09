@@ -53,15 +53,6 @@ After client/server submission failure:
 
 Do not use arbitrary timeout delays as the primary mount/focus mechanism. Do not build a reactive observer that repeatedly steals focus whenever errors change; focus only the failed submission event/reveal lifecycle. Preserve values and account for users editing while requests are pending.
 
-## Specialized controls
-- Password: a trailing `type="button"` toggles visibility with state-aware accessible name/pressed state when appropriate. Keep the same test ID and value across modes.
-- Phone/mask: the adapter defines formatted display versus canonical value; the variant handles input/caret/mask behavior using a compatible existing capability or justified library.
-- Date: use the adopted library's dialog/calendar primitive, explicit empty guidance, focus return and date-only/timestamp mapping.
-- Select/combobox: use matching accessible popup styles; up to 10 options select, above 10 searchable combobox. Preserve stable option values while search changes.
+## Specialized controls and acceptance
 
-Consult the chosen UI guide for concrete component APIs; do not load all UI guides. For the adopted form or schema library, check installed-version documentation before using resolver/registration/controller/error APIs.
-
-## Validation evidence
-Exercise generated controls through stable test-ID scopes plus role/label assertions. Check change, blur, correction, required submit, backend mapping/focus, disabled/pending state and relevant variant edge cases. Fake timers can verify debounce/races when the test stack supports them; do not write delay-heavy tests based on arbitrary sleeps.
-
-Report what was exercised in rendered UI versus source-only review. An adapter prop named `error` alone does not prove error association, danger styling or focus navigation.
+Field-variant behavior and validation cases are owned by `../SKILL.md`; do not redefine them in adapters. Read only the selected UI integration guide from that owner's router when concrete control APIs are needed. The active tool's testing guidance supplies scheduler, timer and rendering-harness mechanics.
