@@ -75,6 +75,8 @@ The selection behavior belongs to `frontend-developer`; React owns compatible op
 | Tailwind without component library | `references/ui/tailwind.md` |
 | Plain CSS | `references/ui/css.md` |
 
+For form work, apply `../../frontend-forms/SKILL.md` and route implementation to `react-data-types-forms` and its form-integration reference. The behavioral contract is shared across tools, not owned by a React form library.
+
 References are version-aware procedures, not permission to migrate the application. Consult the installed version's official documentation for exact APIs when needed.
 
 Start with this file. Inspect the task and the affected code. Then use the index below to load **only** the child skill that owns the relevant concept.

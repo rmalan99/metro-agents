@@ -52,6 +52,7 @@ Record the selected system, installed version, theme location and any integratio
 | Establish persistent frontend conventions | `references/frontend-contract.template.md` |
 | Generate UI elements or verify automated selectors | `references/test-identifiers.md` |
 | Tables or structured record lists in any app | `../frontend-tables/SKILL.md` |
+| Forms, reactive validation or specialized fields | `../frontend-forms/SKILL.md` |
 | Administrative shell, navigation or management views | `../backoffice-design/SKILL.md` |
 | Administrative metrics and charts | `../backoffice-dashboards/SKILL.md` |
 
@@ -117,6 +118,7 @@ Choose ownership by consumers and lifetime: interaction-local, shared applicatio
 - Prevent duplicate submissions and stale responses from overwriting newer results.
 - Retain useful data during recoverable refresh failures when safe; label freshness when it matters.
 - Forms require visible labels, validation rules, associated errors and submission feedback.
+- Apply `../frontend-forms/SKILL.md` for every generated/modified form: reactive dirty/touched validation, inline danger feedback, required markers, helper/placeholder support, backend field-error mapping and failed-submit field reveal. Tool-specific adapters implement this same contract without changing its behavior.
 - Protect unsaved changes where losing them is consequential.
 - Do not invent endpoints or represent demonstration data as production data.
 - Hidden controls are not authorization. Enforce permissions at the trusted boundary when a backend exists.

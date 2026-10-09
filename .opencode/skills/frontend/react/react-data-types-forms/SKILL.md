@@ -1,6 +1,6 @@
 ---
 name: react-data-types-forms
-version: 2.1.0
+version: 2.2.0
 description: API/data boundaries, TypeScript contracts, async data handling, and general form design without prescribing a form library.
 ---
 
@@ -94,12 +94,15 @@ Prefer `unknown` over `any` for untrusted data, followed by validation/narrowing
 
 Forms must have a clear source of truth and validation strategy.
 
+Apply `../../frontend-forms/SKILL.md` as the tool-independent behavioral contract. For React integration load `references/form-integration.md` only when implementing forms/field adapters; do not introduce a form or schema library implicitly.
+
 ## Rules
 
 - Follow the project's existing form library if one exists.
 - Avoid maintaining the same field value simultaneously in several state systems.
 - Validate required business rules before submission.
-- Show errors near the relevant field when possible.
+- Show applicable field errors below their controls, reactively when dirty/touched and after invalid submission/server validation. Use shared danger states for border, label and error text; preserve helper/placeholder, required markers and accessible relationships.
+- Map backend field paths to registered controls; after failed submission reveal/focus the first invalid reachable field. Do not move focus during typing.
 - Preserve user input when a recoverable request fails.
 - Disable duplicate submissions while a request is pending when appropriate.
 - Do not rely only on client-side validation for security/business enforcement; backend validation remains required.
