@@ -66,7 +66,7 @@ Every card representing a navigable record offers clear detail access. Informati
 
 Suggested actions use primary emphasis and explicit verbs. Status is separate from action. A pending payment is not automatically a dangerous/destructive state.
 
-## 6. Flows and acceptance
-Cover requested read/create/edit/delete operations with loading, empty, error, success and denied-access states. Verify permission enforcement at the trusted boundary; navigation visibility is only presentation.
+## 6. Administrative acceptance
+Use the general frontend state/permission contract for requested management flows; apply the administrative checks below.
 
 Check active route and submenu, sidebar expansion, mobile drawer, app bar, user menu, profile/logout integration, record detail and local actions. Review spacing/type consistency, long labels, keyboard focus and secondary-zone hierarchy. Use representative data and clearly label demonstration sources. Report unimplemented integrations explicitly.

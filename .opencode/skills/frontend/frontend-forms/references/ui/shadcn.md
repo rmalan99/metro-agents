@@ -1,6 +1,6 @@
 # shadcn — shared form contract integration
 
-Read only when this UI system is adopted and form work requires its integration details. Apply `../../SKILL.md`; consult the tool-specific UI setup guide separately when needed.
+Inherits `../../SKILL.md`; this reference supplies the selected UI binding only.
 
 Apply `frontend-forms` through the locally generated field components, not an assumed latest template API. Inspect whether the project owns Field, Form or another composition; preserve label/control/help/error relationships and connect only the adopted form tool.
 

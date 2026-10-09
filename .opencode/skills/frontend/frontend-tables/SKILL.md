@@ -41,7 +41,7 @@ Select-all controls must communicate their scope and mixed state. Filtering or r
 
 For all-matching selection, require backend support and convey exclusions/count when available. Do not send only visible IDs while claiming all matches were processed.
 
-Bulk feedback reports success and failure separately, preserves actionable failed selections where useful, and applies authorization at the trusted boundary. Confirm destructive impact and support recovery when viable.
+Bulk feedback reports success and failure separately and preserves actionable failed selections where useful. Apply the inherited permission and destructive-action contract to the selected scope.
 
 ## 5. Accessibility and adaptation
 Use semantic tables with headers and relationships for tabular data. Communicate sort direction on sortable headers. Use a full interactive grid pattern only if spreadsheet-like keyboard behavior is truly required and implemented.

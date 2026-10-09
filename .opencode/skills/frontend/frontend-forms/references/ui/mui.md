@@ -1,6 +1,6 @@
 # mui — shared form contract integration
 
-Read only when this UI system is adopted and form work requires its integration details. Apply `../../SKILL.md`; consult the tool-specific UI setup guide separately when needed.
+Inherits `../../SKILL.md`; this reference supplies the selected UI binding only.
 
 Apply the shared `frontend-forms` behavior through the installed MUI controls. For text fields, bind label, required, placeholder, error state and helper/error content using supported props; keep helpful instructions when an error appears. Default invalid label/border/message treatment belongs in the component theme.
 

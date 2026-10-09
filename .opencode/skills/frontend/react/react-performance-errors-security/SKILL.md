@@ -1,85 +1,33 @@
 ---
 name: react-performance-errors-security
-version: 2.1.0
-description: Performance decisions, memoization discipline, error handling, resilient UI, and frontend security boundaries.
+version: 2.3.0
+description: React rendering diagnosis, memoization/compiler integration, error boundaries and safe HTML rendering. Inherits general performance/security rules from frontend.
 ---
 
-# React Performance, Errors, and Security
+# React Performance and Runtime Boundaries
 
 ## Scope
+Child of `react-core`. The frontend base owns optimization criteria, dependency policy, trusted boundaries and general error feedback. This skill supplies React mechanisms.
 
-This is a child skill of `react-core`. Load it only when the current React task involves the concepts covered here.
+## Rendering diagnosis and memoization
+Use the existing React profiling tools to identify expensive commits, broad Context updates or repeated render work before changing memoization. Confirm which prop/context identities cause the affected render.
 
-It expands sections 19, 20, 21 of the original React Frontend Developer skill. It does not introduce additional libraries or technologies beyond what those concepts require. Existing project choices remain authoritative.
+- React.memo only helps when relevant props remain stable and render cost warrants it.
+- useMemo caches a calculation, not a source of truth.
+- useCallback stabilizes a function identity when a consumer actually benefits.
+- None of these is a correctness mechanism; code must work if recalculated.
+- When React Compiler is enabled, account for its memoization before adding redundant manual wrappers. Do not enable/change compiler configuration for an unrelated fix.
 
----
+Use React.lazy/Suspense through the existing routing/rendering model for justified deferred components. Measure the impact and check fallback behavior; do not wrap every small component in Suspense.
 
-## 19. Performance
+Context subscription scope is owned by `react-state-management`; load it if the diagnosis requires changing provider ownership.
 
-Optimize based on evidence, architecture, and user impact.
+## React failure boundaries
+Use the project's supported route boundary for route failures and React error boundaries for descendant render failures. Define the reset trigger for navigation/retry so a recovered page does not remain trapped in fallback UI.
 
-## First priorities
+Error boundaries do not generally catch asynchronous request failures or event-handler errors. Handle those in their owning data/action layer, under the frontend feedback contract. Suspense pending fallbacks are distinct from error boundaries.
 
-1. Avoid unnecessary state.
-2. Avoid unnecessary Effects.
-3. Avoid excessive work during render.
-4. Keep state local where possible.
-5. Prevent unnecessary large-tree updates through good component boundaries.
-6. Split/lazy-load meaningful expensive areas when justified.
-7. Virtualize genuinely large rendered collections when necessary.
+## Untrusted HTML
+Avoid dangerouslySetInnerHTML for untrusted values. If HTML rendering is a genuine requirement, sanitize through an approved maintained mechanism at the agreed boundary; do not treat React interpolation escaping as protection for inserted HTML.
 
-## Memoization
-
-Do not automatically wrap everything in:
-
-- `React.memo`
-- `useMemo`
-- `useCallback`
-
-Memoization is an optimization, not a correctness tool.
-
-If React Compiler is enabled in the project, rely on it for normal memoization and use manual memoization only when a concrete need remains.
-
-If React Compiler is not enabled, manually memoize only when there is a measurable or structurally clear benefit.
-
-Never change project compiler configuration as a side effect of an unrelated feature.
-
----
-
----
-
-## 20. Error Handling
-
-Errors must not leave the UI in an ambiguous state.
-
-Handle errors at the appropriate boundary:
-
-- Field validation errors -> form field.
-- Request errors -> feature/action feedback.
-- Route/page errors -> route error boundary when supported.
-- Unexpected render failures -> application/component error boundary strategy.
-
-Do not swallow errors silently.
-
-User-facing error messages should explain what the user can do next without exposing sensitive implementation details.
-
----
-
----
-
-## 21. Security
-
-Frontend validation is not authorization.
-
-## MUST
-
-- Never place secrets or privileged credentials in frontend code.
-- Treat API/browser/user input as untrusted.
-- Avoid rendering untrusted HTML.
-- If `dangerouslySetInnerHTML` is unavoidable, content must be sanitized by an approved mechanism.
-- Hide UI actions when appropriate, but assume backend authorization is still required.
-- Avoid exposing sensitive information through logs or error messages.
-
----
-
----
+Use the general frontend security contract for secrets, authorization and sensitive feedback; do not create a parallel policy here.
