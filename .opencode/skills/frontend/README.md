@@ -13,6 +13,7 @@ For React work, also load `react-core`. It translates the base into React and ro
 | General frontend base | `frontend-developer/SKILL.md` |
 | Shared theme from visual requirements | `frontend-developer/references/design-system.md` |
 | Persistent conventions | `frontend-developer/references/frontend-contract.template.md` |
+| Stable generated-element selectors for development and QA | `frontend-developer/references/test-identifiers.md` |
 | React entry and UI integration | `react/react-core/SKILL.md` |
 | React concepts | Relevant existing child from the `react-core` index |
 | Tables/lists in any application | `frontend-tables/SKILL.md` |

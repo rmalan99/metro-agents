@@ -27,6 +27,14 @@ Use existing documentation instead if it already owns these decisions. Replace p
 - Accessibility and focus patterns: <rules>
 - Authentication/permission boundary, if relevant: <contract>
 
+## Test-identifier contract
+- Attribute: data-testid (or explicit mapping to existing runner configuration)
+- Naming and instance scopes: <stable convention>
+- Repeated-record selectors and portal scopes: <patterns>
+- Shared component forwarding: <locations/mechanism>
+- Known library/legacy exceptions: <bounded gaps and reasons>
+- Selector changes: <consumers/migration if relevant>
+
 ## Specialized guidance
 - Active tool skill: <existing skill>
 - UI references needed for current stack: <references>

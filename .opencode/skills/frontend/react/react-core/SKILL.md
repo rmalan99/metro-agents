@@ -39,6 +39,7 @@ Do **not** load every child skill by default. Do **not** introduce a library, fr
 - Reuse existing components, hooks, utilities, and patterns before creating new abstractions.
 - Make the smallest safe change that completely satisfies the requirement.
 - Preserve type safety, accessibility, important UI states, and testability.
+- Apply the general `data-testid` contract to every explicitly generated DOM element. Forward identifiers through custom components to native roots/slots and give repeated instances stable scopes; React `key` is not a DOM selector.
 
 ### MUST NOT
 
