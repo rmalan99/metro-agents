@@ -1,6 +1,6 @@
 ---
 name: react-testing-quality-workflow
-version: 2.1.0
+version: 2.2.0
 description: Testing strategy, code-quality rules, dependency policy, implementation workflow, review checklist, anti-patterns, decision rules, Definition of Done, and guiding principles.
 ---
 
@@ -40,6 +40,10 @@ Validate:
 - API-driven UI states where practical.
 
 Prefer queries based on accessible roles, labels, and visible text over implementation-specific selectors.
+
+Apply `../../frontend-developer/references/test-identifiers.md` for the stable generated-UI selector contract. Use `data-testid` for deterministic targeting and scope repeated controls to their stable instance; use roles/labels and accessible-name assertions to verify semantics. These serve different purposes and neither replaces behavioral assertions.
+
+Before writing a new selector, inspect development's handed-off patterns and actual rendered attributes. Do not duplicate selector discovery, use positional fallbacks to mask ambiguity or treat missing attributes as a reason to weaken a test. Verify forwarding through custom/library components, conditional states and portals. Report missing/unstable required identifiers as defects rather than editing production UI from QA.
 
 ## E2E tests
 
@@ -208,6 +212,9 @@ Before considering React work complete, verify:
 - [ ] No secrets/sensitive data were exposed.
 - [ ] No unnecessary dependency was added.
 - [ ] Tests cover the important behavior.
+- [ ] Generated DOM elements carry stable `data-testid` values under the shared contract, with scoped repeated instances and documented exceptions.
+- [ ] Rendered identifier placement, scope uniqueness and state/reorder stability were verified where relevant; unexecuted checks are explicit.
+- [ ] Selector patterns and any renames are handed off to QA without replacing role/label or behavioral checks.
 - [ ] Regression test exists for a bug fix when practical.
 - [ ] Lint/typecheck/tests pass.
 - [ ] No debug code remains.

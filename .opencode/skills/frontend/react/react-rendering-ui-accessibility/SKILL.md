@@ -58,6 +58,32 @@ Avoid deeply nested ternaries.
 
 The existing design system is the source of truth.
 
+For generated elements, apply `../../frontend-developer/references/test-identifiers.md`. Custom UI components must forward their scope/identifier to rendered DOM and derive stable IDs for owned children. Use the selected library's supported slot APIs for composite controls; never assume setting an attribute on a component labels every internal element.
+
+Example of a project-owned component (illustrative prop name; preserve existing conventions):
+
+```tsx
+type SaveActionProps = {
+  testId: string;
+  busy: boolean;
+  onSave: () => void;
+};
+
+export function SaveAction({ testId, busy, onSave }: SaveActionProps) {
+  return (
+    <button data-testid={testId} disabled={busy} onClick={onSave}>
+      <span data-testid={`${testId}-label`}>{busy ? 'Saving' : 'Save'}</span>
+    </button>
+  );
+}
+```
+
+Pass an explicit stable instance ID from the caller. Do not use `useId`, random values, array indexes or translated text as test identity. Preserve existing native label IDs independently. Overlays rendered through portals need their own scope. Validate the rendered attribute and behavioral states, not only the TypeScript prop.
+
+Apply the shared visual contract from `frontend-developer`; React-specific implementation belongs here and in the selected UI reference routed by `react-core`. For a platform-wide style adjustment, change the native theme/tokens and component defaults before local screens. For a local composition, keep the adjustment local. Do not create a parallel token system or repeatedly patch each component instance.
+
+Verify provider placement and style inheritance for dialogs, menus and other portals. In server-rendered frameworks, follow the installed framework/library's style integration and client-boundary guidance; do not make the whole application client-rendered merely to theme a control.
+
 ## MUST
 
 - Reuse existing UI primitives.
