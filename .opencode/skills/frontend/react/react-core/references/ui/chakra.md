@@ -42,10 +42,3 @@ Inspect portal and layering configuration before changing z-index values. Do not
 | Repeated local overrides | Recipe/component defaults | Shared visual configuration |
 
 Verify modes actually supported, hydration where relevant, typed tokens, keyboard behavior and consumers of updated shared recipes. Record the major and configuration entry point in the frontend contract.
-
-## Shared form contract integration
-Apply `frontend-forms` with the installed major's field composition. In v2 inspect FormControl/label/helper/error APIs; in v3 inspect compound Field/recipe APIs. Do not mix their prop names. Bind required/invalid metadata and consistent danger treatment to the whole field anatomy.
-
-Use supported input grouping/adornments for icons and mandatory password visibility. For up to 10 options use an accessible custom popup select compatible with the installed major; a NativeSelect is not the default custom-popup contract. Above 10 options use searchable combobox capability available in that version or a justified compatible primitive.
-
-Map actual input/trigger refs for failed-submit focus. Choose the installed-version dialog/calendar capability for date selection and assess phone/mask integration when missing. Generic base fields consume backend/form state; feature adapters own remote requests and error-path parsing.

@@ -12,6 +12,20 @@ Apply to every generated or modified form regardless of UI library or framework.
 
 The default selection rule is: 10 or fewer options use a select; more than 10 use a searchable combobox. If the total is remote/unknown or users need to locate items by text, prefer a searchable combobox even when the current response contains fewer items.
 
+## Reference ownership and selective loading
+Frontend owns form behavior and its implementation references. The active tool supplies technical mechanisms but does not route or duplicate this contract.
+
+| Needed for the task | Load |
+|---|---|
+| Field/form adapters, reactive checks or backend error/focus integration | `references/form-integration.md` |
+| MUI field integration | `references/ui/mui.md` |
+| shadcn/ui field integration | `references/ui/shadcn.md` |
+| Chakra UI field integration | `references/ui/chakra.md` |
+| Tailwind field integration | `references/ui/tailwind.md` |
+| Plain CSS field integration | `references/ui/css.md` |
+
+Load only the adopted UI system's reference when needed, not all five. For framework/library setup APIs, consult the existing tool-specific guide separately. Keep shared field behavior and future form extensions here.
+
 ## 1. Inspect and establish the contract
 Identify fields, initial values, required conditions, synchronous rules, asynchronous checks, backend error shape, locale, submission semantics and current form tools. Separate display values from canonical submission values. Do not invent backend field names or validation rules.
 

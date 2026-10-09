@@ -45,10 +45,3 @@ Use one consistent class merge strategy if needed. Verify how utilities conflict
 | Reset affects existing controls | Preflight/base styles and layering | Deliberate base integration |
 
 Run a production build when detection/build configuration changes. Check generated styles, long content, responsive composition, focus and reduced motion. Record token source and class-composition rules.
-
-## Shared form contract integration
-Implement `frontend-forms` using shared field components and semantic theme classes for invalid border, label and error text. Utility classes alone do not implement dirty/touched, validation, focus or ARIA relationships.
-
-Provide labeled controls, required marker, helper/error nodes, placeholder guidance and icon slots. A password icon must be a named non-submit button. Use accessible primitives for custom select/combobox and date dialog if approved; do not invent partial keyboard behavior with styled divs. The selection threshold is 10/11 total options.
-
-Keep form-tool adapters and feature data adapters separate from styled base fields. For masks and phone numbers, implement or adopt real caret/editing/normalization behavior. Verify danger and focus classes coexist, including when disabled or during submission.
