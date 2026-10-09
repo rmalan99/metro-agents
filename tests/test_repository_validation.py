@@ -130,6 +130,22 @@ class RepositoryTests(unittest.TestCase):
         self.mutate(".opencode/skill-ownership.json", json.dumps(registry), "missing owner")
         self.mutate(".opencode/skills/hierarchical-software-delivery/references/schemas/task-quality.md", "# No schema\n", "missing canonical definition")
 
+    def test_qa_contract_persists_valuable_manual_cases(self):
+        base = self.fixture / ".opencode/skills/hierarchical-software-delivery/references"
+        quality = (base / "quality.md").read_text()
+        junior = (base / "roles/qa-junior.md").read_text()
+        task = (base / "schemas/qa-task.md").read_text()
+        task_result = (base / "schemas/qa-task-result.md").read_text()
+        qa_result = (base / "schemas/qa-result.md").read_text()
+
+        self.assertIn("Every valuable manual case must be covered", quality)
+        self.assertIn("Do not return `PASS` with uncovered valuable cases", junior)
+        self.assertIn("existing_coverage: []", task)
+        self.assertIn("existing_tests_reused: []", task_result)
+        self.assertIn("valuable_manual_cases: []", task_result)
+        self.assertIn("tests_reused: []", qa_result)
+        self.assertIn("`PASSED` is invalid while any valuable case remains uncovered", qa_result)
+
     def test_personal_cursor_bootstrap_is_rejected(self):
         source = json.dumps({"mcpServers": {"todo-mcp": {"command": "node", "args": ["/home/person/server.js"]}}})
         self.mutate(".cursor/mcp.json", source, "portable bootstrap")

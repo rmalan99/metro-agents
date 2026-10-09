@@ -1,7 +1,0 @@
----
-description: Route task management to the repository TODO policy and MCP tool catalog
-globs: [".todo"]
-alwaysApply: false
----
-
-Follow [Repository TODO policy](../../AGENTS.md). When performing task operations, consult [TODO MCP catalog](../../.agents/skills/todo-tracker/SKILL.md); do not preload the catalog for unrelated work.
