@@ -128,8 +128,11 @@ def validate(root):
         cursor = load_json(root / ".cursor/mcp.json")
     except (ValueError, OSError) as exc:
         return [str(exc)]
+    ignored_parts = {"node_modules", "work", "__pycache__"}
     markdown = [p for directory in (".opencode", ".agents", ".cursor", "docs")
-                for p in (root / directory).rglob("*") if p.is_file() and p.suffix in (".md", ".mdc")]
+                for p in (root / directory).rglob("*")
+                if p.is_file() and p.suffix in (".md", ".mdc")
+                and not ignored_parts.intersection(p.relative_to(root).parts)]
     markdown += [p for p in root.glob("*.md")]
     paragraphs = defaultdict(set)
     skills = {}
@@ -223,6 +226,16 @@ def validate(root):
         actual = {k for k, v in rules.items() if v == "allow"} if isinstance(rules, dict) else set()
         if actual != set(allowed) or (isinstance(rules, dict) and rules.get("*") != "deny"):
             errors.append(f"Agent {name}: delegation differs from canonical role scope")
+    logger_command = "python3 .opencode/tools/append-error-log.py"
+    for name, agent in agents.items():
+        bash = agent.get("permission", {}).get("bash", "deny")
+        action = action_for(bash, logger_command)
+        expected = "allow" if name == "error-logger" else "deny"
+        if action != expected:
+            errors.append(f"Agent {name}: error-log writer permission must be {expected}")
+    logger_bash = agents.get("error-logger", {}).get("permission", {}).get("bash", {})
+    if not isinstance(logger_bash, dict) or logger_bash != {"*": "deny", logger_command: "allow"}:
+        errors.append("Agent error-logger: bash scope must contain only the append helper")
     todo = cursor.get("mcpServers", {}).get("todo-mcp", {})
     if todo.get("command") != "python3" or todo.get("args") != [".opencode/tools/run-todo-mcp.py"]:
         errors.append("Cursor TODO MCP must use the portable bootstrap")

@@ -1,6 +1,6 @@
 ---
 name: react-architecture-components
-version: 2.3.0
+version: 2.4.0
 description: Project inspection, feature architecture, component boundaries, decomposition, naming, props, and component contracts.
 ---
 
@@ -62,7 +62,11 @@ src/
 
 - Receive explicit inputs through typed props.
 - Expose intentional events/callbacks.
-- Prefer composition when behavior or layout must vary.
+- Use composition when behavior or layout must vary.
+
+Before implementing a page, identify the task-relevant project-owned base components and feature sections it will compose. If a required base does not exist, establish the smallest useful base before assembling the page. Page components coordinate route data, permissions, mutations, layout and page-level state; they must not recreate repeated field anatomy, icon actions, state styling or accessibility wiring from raw UI-library controls.
+
+Using a library primitive directly is valid for a genuinely local control that already satisfies the complete contract. Once composition, behavior, variants or repeated treatment are shared, contain the primitive in a project component and consume that public component from pages and features. Do not extract wrappers that only rename the primitive.
 
 ## Split a component when
 

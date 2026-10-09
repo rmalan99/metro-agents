@@ -23,7 +23,7 @@ Use existing documentation instead if it already owns these decisions. Replace p
 
 ## Behavior
 - State ownership and URL conventions: <rules>
-- Loading/empty/error/form feedback: <shared patterns>
+- Loading/empty/error/form feedback: <shared patterns; ModalAlert location/owner and operation-result mapping>
 - Form fields/adapters: <base, variants, form-tool binding locations>
 - Reactive validation: <dirty/touched exposure, debounce/async rules>
 - Backend field errors and reveal/focus: <mapping and mechanism>

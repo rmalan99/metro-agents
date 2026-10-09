@@ -12,6 +12,7 @@ For React work, also load `react-core`. It translates the base into React and ro
 |---|---|
 | General frontend base | `frontend-developer/SKILL.md` |
 | Shared theme from visual requirements | `frontend-developer/references/design-system.md` |
+| Operation results and backend failure feedback | `frontend-developer/references/feedback.md` |
 | Persistent conventions | `frontend-developer/references/frontend-contract.template.md` |
 | Stable generated-element selectors for development and QA | `frontend-developer/references/test-identifiers.md` |
 | React entry and UI integration | `react/react-core/SKILL.md` |
@@ -25,7 +26,7 @@ The five UI implementation references live under `react/react-core/references/ui
 
 ## Rule ownership
 
-The ownership table and task router in `frontend-developer` are canonical. The React concept router lives only in `react-core`; do not maintain a duplicate concept index here. General form behavior/references belong to `frontend-forms`, not React.
+The ownership table and task router in `frontend-developer` are canonical. The React concept router lives only in `react-core`; do not maintain a duplicate concept index here. General form behavior/references belong to `frontend-forms`, while operation-result channel selection and `ModalAlert` belong to the frontend feedback contract, not React.
 
 Child skills add procedures specific to their responsibility and inherit general instructions without copying them. Prompts add role authority/handoff, and project contracts record actual decisions rather than reproducing skill rules. Reuse already-loaded context.
 

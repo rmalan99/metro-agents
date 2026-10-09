@@ -1,6 +1,6 @@
 ---
 name: frontend-forms
-version: 1.1.0
+version: 1.3.0
 description: Tool-independent reactive form and field contract: dirty/touched validation, inline errors, backend mapping and focus, shared field composition, specialized controls and form/data adapters.
 ---
 
@@ -8,7 +8,7 @@ description: Tool-independent reactive form and field contract: dirty/touched va
 
 ## Scope and ownership
 
-Apply to every generated or modified form regardless of UI library or framework. Follow `../frontend-developer/SKILL.md`, its theme and test-identifier contract. The active tool supplies state/ref mechanics and the selected UI reference supplies supported components/slots. Reuse the project's form/validation library; do not install one merely because this skill exists.
+Apply to every generated or modified form regardless of UI library or framework. Follow `../frontend-developer/SKILL.md`, `../frontend-developer/references/component-contracts.md`, `../frontend-developer/references/feedback.md` and the frontend theme/test-identifier contracts. The active tool supplies state/ref mechanics and the selected UI reference supplies supported components/slots. Reuse the project's form/validation library; do not install one merely because this skill exists.
 
 Selection mode and option-count rules are owned by `references/fields/selection.md`.
 
@@ -50,7 +50,7 @@ Debounce expensive/async checks where useful; a starting delay of 250–400ms is
 Client validation improves feedback; server validation remains authoritative. Do not trigger a server request on every keystroke if a debounced check or local rule suffices.
 
 ## 3. Field anatomy, error and visual state
-Prefer composition using the library's existing field/control primitives:
+Implement the shared field through composition using the library's existing field/control primitives:
 
 ```text
 Field root
@@ -71,13 +71,13 @@ Keep a visible label; placeholder is guidance, not its replacement. Provide a su
 
 Helper and error may coexist when helper instructions remain useful. Avoid duplicate messages; prioritize the actionable current error. Associate helper/error IDs with the control and expose invalid state semantically. Avoid announcing every keystroke with an assertive live region.
 
-Leading/trailing icons are supported by the base composition. Decorative icons have decorative semantics; actions use real named buttons and must not overlap typed text or steal focus unexpectedly.
+The base composition must expose leading/trailing icon slots. Use the adopted icon set when a field variant specifies or conventionally uses an icon; do not substitute visible action text for that icon. Decorative icons have decorative semantics; icon actions use real named buttons, accessible state-aware names and visible focus, and must not overlap typed text or steal focus unexpectedly.
 
 ## 4. Backend validation and reveal
 Map the actual backend response through a feature-owned adapter to registered field paths, including nested objects and array identities. Do not place HTTP-response parsing inside a generic input.
 
-- Attach known field errors below their fields and mark them visibly invalid regardless of prior dirty/touched status.
-- Put unmapped, cross-field or nonvalidation failures in a form-level message; never silently discard them.
+- Process backend failures into safe user-facing language and show the operation failure through the shared error `ModalAlert`; never expose raw internals or silently discard a failure.
+- Attach backend field errors below their fields, mark them visibly invalid regardless of prior dirty/touched status and summarize the failed submission in the error `ModalAlert`. Client-side validation remains inline and must not open a modal while typing or for each local rule.
 - Preserve entered values and allow correction/resubmission. Prevent duplicate requests while submission is pending.
 - Reveal the first invalid field in logical form order, not arbitrary response order: open the containing section/tab/step where safe, render it through its lifecycle (not an arbitrary timeout), then focus its actual control and scroll it into view without sticky-header obstruction.
 - If a field cannot be revealed/focused, provide a navigable error summary or clear form-level explanation. Do not silently move focus to a hidden/disabled node.
@@ -99,20 +99,24 @@ Load only the variant being implemented/verified. Its behavior and additional ch
 | Mask | `references/fields/mask.md` |
 
 ## 6. Composition and integration boundaries
-Prefer compound components when compatible with the adopted library. Preserve equivalent public composition when it uses another supported pattern; do not force a new API for stylistic uniformity.
+Use compound components when compatible with the adopted library. Preserve an existing equivalent public composition when it uses another supported pattern; do not force a new API only for stylistic uniformity.
 
 Build responsibilities separately:
-1. **Base field:** shared anatomy, semantics, theme, slots, focus target and test-ID forwarding. No endpoint or form-library coupling.
-2. **Specialized variant:** password/date/phone/select/mask behavior built on the base. No generic HTTP parsing.
+1. **Base field:** required project-owned composition for shared anatomy, semantics, theme, slots, focus target and test-ID forwarding. No endpoint or form-library coupling.
+2. **Specialized variant:** password/date/phone/select/mask behavior composed from the base rather than recreated in a page. No generic HTTP parsing.
 3. **Data-connected component:** feature-owned adapter loads/submits actual backend data and maps results into field inputs. Generic UI components must not hard-code URLs or credentials.
 4. **Form-connected adapter:** binds value, events, ref/focus, dirty/touched and error to the chosen form tool. One owner remains authoritative.
 
-These layers may compose in either direction appropriate to the project. Do not require a wrapper for each layer if an existing supported API already satisfies the responsibility. Record the extension pattern so other skills reuse it.
+These layers may compose in either direction appropriate to the project. An existing project component may satisfy a layer when it demonstrably owns the complete responsibility; a raw library control does not satisfy the project-owned base merely because it can render an input. Do not add wrappers that only rename primitives. Record the extension pattern so other skills reuse it, and keep page/form containers on the public project components rather than rebuilding field anatomy from raw controls.
 
 ## 7. Verification and handoff
 Test reactive error after edit/blur, no pristine errors, correction clearing, submit validation and dirty/touched semantics. Include dependent fields, debounced races, nested backend errors, unmapped errors and stale submission snapshots where relevant.
 
 Verify backend error reveals/focuses the correct reachable field, preserves input and does not move focus while typing. Check required marker/semantics, helper association, placeholder-equivalent guidance, danger states and keyboard focus.
+
+Verify authoritative form completion opens the shared success `ModalAlert`, backend failure opens the shared error `ModalAlert`, field-specific backend details remain inline, and the flow uses no native JavaScript alert, toast/snackbar or static alert as its result feedback.
+
+Verify pages consume the shared base and specialized variants instead of duplicating raw field composition. For icon actions, verify the adopted icon renders, the accessible name reflects current state and no visible text substitute appears unless the product explicitly requires a labeled action.
 
 Use the active variant reference for additional acceptance cases. Reuse the selector contract for targeted behavioral/semantic checks.
 

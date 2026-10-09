@@ -43,6 +43,6 @@ Whole-requirement reporting uses COMPLETED, BLOCKED or IN_PROGRESS.
 [Quality and acceptance](references/quality.md) owns readiness, evidence and corrections. [Concurrency](references/concurrency.md) owns slot allocation and safe parallel work. Read them only for roles/actions that require them, as routed below.
 
 ## Administrative logging
-Error logging is an administrative exception outside Junior slot budgets and never a delivery gate. The Orchestrator supplies the [Error log contract](../../logs/error-log.md) and reported events to error-logger. Read it only when reporting/dispatching events. The logger does not load this skill; it receives its contract in the task.
+Error logging is a passive administrative audit for the user, outside Junior slot budgets and never a delivery gate. Frontend Lead, Backend Lead, QA Lead and Orchestrator may supply the [Error log contract](../../logs/error-log.md) and their own reported events directly to error-logger. Logging never escalates or changes correction work. The logger does not load this skill; it receives its contract in the task.
 
 Use TODO MCP when managing project TODOs. Shared-skill improvements require an explicitly authorized improvement task.

@@ -10,6 +10,7 @@ Choose ownership by consumers and lifetime: interaction-local, shared applicatio
 - Prevent duplicate submissions and stale responses from overwriting newer results.
 - Confirm destructive actions according to their impact and support recovery when viable.
 - Retain useful data during recoverable refresh failures when safe; label freshness when it matters.
+- Apply `feedback.md` to completed mutations and backend failures; do not select toast, static alert or native JavaScript alert locally.
 - Form-specific behavior is owned by `../../frontend-forms/SKILL.md`; use its router when generating or modifying forms.
 - Protect unsaved changes where losing them is consequential.
 - Do not invent endpoints or represent demonstration data as production data.

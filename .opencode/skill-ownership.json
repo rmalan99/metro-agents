@@ -8,6 +8,7 @@
     "frontend.discovery": ".opencode/skills/frontend/frontend-developer/references/project-discovery.md",
     "frontend.visual": ".opencode/skills/frontend/frontend-developer/references/design-system.md",
     "frontend.components": ".opencode/skills/frontend/frontend-developer/references/component-contracts.md",
+    "frontend.feedback": ".opencode/skills/frontend/frontend-developer/references/feedback.md",
     "frontend.data": ".opencode/skills/frontend/frontend-developer/references/data-and-integration.md",
     "frontend.technical-quality": ".opencode/skills/frontend/frontend-developer/references/technical-quality.md",
     "frontend.selectors": ".opencode/skills/frontend/frontend-developer/references/test-identifiers.md",
@@ -67,15 +68,18 @@
     ],
     "evaluator": [],
     "frontend-lead": [
-      "frontend-junior"
+      "frontend-junior",
+      "error-logger"
     ],
     "frontend-junior": [],
     "backend-lead": [
-      "backend-junior"
+      "backend-junior",
+      "error-logger"
     ],
     "backend-junior": [],
     "qa-lead": [
-      "qa-junior"
+      "qa-junior",
+      "error-logger"
     ],
     "qa-junior": [],
     "error-logger": []

@@ -5,17 +5,51 @@ from pathlib import Path
 import sys
 
 
+REASON_CODES = {
+    "REQUIREMENT_MISMATCH",
+    "FUNCTIONAL_FAILURE",
+    "REGRESSION",
+    "VALIDATION",
+    "ACCESSIBILITY",
+    "MISSING_TESTS",
+    "UNSTABLE_SELECTOR",
+    "INCOMPLETE_WORK",
+    "CONTRACT_VIOLATION",
+    "OTHER",
+}
+
+SOURCES = {"QA_DEFECT", "LEAD_REJECTION", "ORCHESTRATION_ERROR", "AGENT_ERROR"}
+
+
 def append(event, path):
     required = {
-        "event_id", "error_id", "type", "reported_at", "reported_by", "team",
-        "requirement_id", "work_order_id", "task_id", "description", "evidence",
-        "correction", "reported_result",
+        "event_id", "error_id", "type", "reported_at", "reported_by", "team", "source",
+        "requirement_id", "work_order_id", "task_id", "defect_id", "reason_code",
+        "reason_detail", "failed_criteria", "description", "evidence", "correction",
+        "reported_result",
     }
     if not isinstance(event, dict) or set(event) != required:
         raise ValueError("Expected exactly the documented event fields")
-    for key in ("event_id", "error_id"):
+    for key in ("event_id", "error_id", "reason_detail"):
         if not isinstance(event[key], str) or not event[key].strip():
             raise ValueError(f"{key} must be a nonempty string")
+    if event["source"] not in SOURCES:
+        raise ValueError("Unsupported source")
+    if event["reason_code"] not in REASON_CODES:
+        raise ValueError("Unsupported reason_code")
+    if not isinstance(event["failed_criteria"], list):
+        raise ValueError("failed_criteria must be a list")
+    if any(not isinstance(value, str) or not value.strip() for value in event["failed_criteria"]):
+        raise ValueError("failed_criteria entries must be nonempty strings")
+    if event["defect_id"] is not None and (
+        not isinstance(event["defect_id"], str) or not event["defect_id"].strip()
+    ):
+        raise ValueError("defect_id must be null or a nonempty string")
+    if event["source"] == "QA_DEFECT":
+        if event["defect_id"] != event["error_id"]:
+            raise ValueError("QA defect error_id must match defect_id")
+        if not event["failed_criteria"]:
+            raise ValueError("QA defect failed_criteria must be nonempty")
     if event["type"] not in {
         "ERROR_REPORTED", "CORRECTION_REPORTED", "RESOLUTION_REPORTED"
     }:

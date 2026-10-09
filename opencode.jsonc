@@ -122,7 +122,8 @@
         },
         "task": {
           "*": "deny",
-          "frontend-junior": "allow"
+          "frontend-junior": "allow",
+          "error-logger": "allow"
         },
         "skill": {
           "*": "deny",
@@ -163,6 +164,7 @@
         "task": "deny",
         "bash": {
           "*": "allow",
+          "python3 .opencode/tools/append-error-log.py": "deny",
           "git push*": "deny",
           "git commit*": "deny",
           "git reset*": "deny",
@@ -216,7 +218,8 @@
         },
         "task": {
           "*": "deny",
-          "backend-junior": "allow"
+          "backend-junior": "allow",
+          "error-logger": "allow"
         },
         "skill": {
           "*": "deny",
@@ -244,6 +247,7 @@
         "task": "deny",
         "bash": {
           "*": "allow",
+          "python3 .opencode/tools/append-error-log.py": "deny",
           "git push*": "deny",
           "git commit*": "deny",
           "git reset*": "deny",
@@ -283,7 +287,8 @@
         },
         "task": {
           "*": "deny",
-          "qa-junior": "allow"
+          "qa-junior": "allow",
+          "error-logger": "allow"
         },
         "skill": {
           "*": "deny",
@@ -311,6 +316,7 @@
         "task": "deny",
         "bash": {
           "*": "allow",
+          "python3 .opencode/tools/append-error-log.py": "deny",
           "git push*": "deny",
           "git commit*": "deny",
           "git reset*": "deny",

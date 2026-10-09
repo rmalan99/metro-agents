@@ -11,3 +11,5 @@ qa_result:
   regression_risks: []
   unresolved: []
 ```
+
+`FAILED` requires at least one QA Lead-confirmed [Defect](defect.md). `BLOCKED` represents a missing prerequisite and must not be counted as a product defect.

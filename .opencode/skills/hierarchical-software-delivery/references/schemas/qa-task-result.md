@@ -14,3 +14,5 @@ qa_task_result:
 ```
 
 tests_executed entries follow [Validation evidence](validation-evidence.md).
+
+`FAIL` requires at least one complete [Defect](defect.md). `BLOCKED` represents a missing prerequisite, not an observed product violation.
