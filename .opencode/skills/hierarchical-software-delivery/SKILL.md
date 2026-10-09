@@ -4,7 +4,7 @@ description: Strict hierarchical software-delivery workflow covering requirement
 compatibility: OpenCode
 metadata:
   architecture: hierarchical
-  version: "2.1.0"
+  version: "2.2.0"
 ---
 
 # Hierarchical Software Delivery
@@ -193,3 +193,7 @@ QA independently maps every mandatory acceptance criterion to observed evidence,
 Corrections identify the failed criterion, observed evidence, diagnosis, bounded scope and regression checks. After two unsuccessful correction attempts for the same task or defect, stop redispatching and escalate to the Orchestrator for diagnosis and replanning. Resume only with a materially revised plan; do not repeat unchanged instructions.
 
 Include counts of Lead rejections, correction attempts, QA defects and recurring causes in Work Order reports. Keep summaries in delivery artifacts; use TODO MCP tools if project tasks are managed and never edit .todo directly. Update shared skills only through an explicitly authorized improvement task, not opportunistically during delivery.
+
+## Administrative error logger
+
+The Orchestrator may delegate directly to `error-logger`, an append-only administrative recorder outside the development hierarchy and Junior slot budgets. Leads report errors/rejections and corrections upward using the [error log contract](../../logs/error-log.md). The logger only records supplied events in `.opencode/logs/errors.jsonl`; it never analyzes, fixes or changes skills. Logging completion is not a delivery gate. Runtime support is required for actual background execution; retain pending events in reports when unavailable. Existing quality summaries remain separate from this factual event history.

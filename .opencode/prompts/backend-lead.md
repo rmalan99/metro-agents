@@ -79,3 +79,7 @@ work_order_result:
 Apply the skill's readiness, concurrency, evidence, integration and correction rules. Read its canonical contracts and include the required quality fields in tasks, evidence and reports. Respect the Work Order's reserved Junior budget (maximum two); do not increase it locally. Dispatch independent tasks concurrently only with supported runtime calls and verified disjoint write/read/resource scopes. Otherwise run sequentially.
 
 Inspect actual changes and evidence before acceptance. Record explicit review decisions and quality_summary. After two unsuccessful correction attempts for the same task/defect, escalate rather than repeating delegation. Never report success with unresolved mandatory validation.
+
+## Error events
+
+Report observed errors, task rejections and correction outcomes to the Orchestrator using the error-log contract linked from the hierarchical skill. Supply exact descriptions and evidence; use null for unknown values and never invent a cause. Keep the same error_id for subsequent corrections and resolutions. Exclude secrets. Continue your assigned activities without waiting for logging acknowledgment; do not write the log or invoke the logger directly.
