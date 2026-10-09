@@ -1,6 +1,6 @@
 ---
 name: react-data-types-forms
-version: 2.1.0
+version: 2.3.0
 description: API/data boundaries, TypeScript contracts, async data handling, and general form design without prescribing a form library.
 ---
 
@@ -10,7 +10,6 @@ description: API/data boundaries, TypeScript contracts, async data handling, and
 
 This is a child skill of `react-core`. Load it only when the current React task involves the concepts covered here.
 
-It expands sections 12, 13, 14 of the original React Frontend Developer skill. It does not introduce additional libraries or technologies beyond what those concepts require. Existing project choices remain authoritative.
 
 ---
 
@@ -20,18 +19,7 @@ First use the project's existing data-access pattern.
 
 Possible existing solutions include framework loaders/actions, query libraries, generated clients, or service modules.
 
-## Requirements
-
-Every async UI flow must consider:
-
-- Initial/loading state.
-- Success state.
-- Empty state when applicable.
-- Error state.
-- Retry behavior when appropriate.
-- Request cancellation/race conditions when applicable.
-- Stale data/caching rules when applicable.
-- Permission/unauthorized states.
+Use the frontend async-state contract; this module owns the React data integration and typed mapping below.
 
 ## Separation
 
@@ -54,8 +42,6 @@ Use mapping when necessary:
 ```text
 API DTO -> domain/UI model -> component
 ```
-
----
 
 ---
 
@@ -88,24 +74,8 @@ Prefer `unknown` over `any` for untrusted data, followed by validation/narrowing
 
 ---
 
----
+## 14. React form binding boundary
 
-## 14. Forms
+Form behavior and reference selection belong to frontend. This module only binds its contract to React: preserve the adopted form tool's value/change/blur/ref registration, forward focus to the actual control and avoid registering a field twice. For composite controls, map their value callbacks to the tool's supported controller/adapter API; do not assume a DOM event payload.
 
-Forms must have a clear source of truth and validation strategy.
-
-## Rules
-
-- Follow the project's existing form library if one exists.
-- Avoid maintaining the same field value simultaneously in several state systems.
-- Validate required business rules before submission.
-- Show errors near the relevant field when possible.
-- Preserve user input when a recoverable request fails.
-- Disable duplicate submissions while a request is pending when appropriate.
-- Do not rely only on client-side validation for security/business enforcement; backend validation remains required.
-
-Every input must have an accessible label or equivalent semantic relationship.
-
----
-
----
+Keep a single value owner rather than mixing uncontrolled registration, controlled props and an independent local copy. Use the installed React version's supported ref mechanism.

@@ -1,6 +1,6 @@
 ---
 name: react-architecture-components
-version: 2.1.0
+version: 2.3.0
 description: Project inspection, feature architecture, component boundaries, decomposition, naming, props, and component contracts.
 ---
 
@@ -10,29 +10,12 @@ description: Project inspection, feature architecture, component boundaries, dec
 
 This is a child skill of `react-core`. Load it only when the current React task involves the concepts covered here.
 
-It expands sections 3, 4, 5, 6 of the original React Frontend Developer skill. It does not introduce additional libraries or technologies beyond what those concepts require. Existing project choices remain authoritative.
 
 ---
 
-## 3. Before Writing Code
+## 3. React inspection targets
 
-The developer must inspect the relevant codebase before making changes.
-
-## Required analysis
-
-1. Identify the feature/module being changed.
-2. Locate related components, hooks, services, schemas, types, tests, and routes.
-3. Understand the existing data flow.
-4. Identify the source of truth for every relevant value.
-5. Check existing reusable components before creating a new one.
-6. Check the project's current libraries and patterns before introducing another solution.
-7. Identify loading, error, empty, disabled, permission, and success states.
-8. Identify whether the change affects accessibility, responsive behavior, navigation, caching, permissions, or API contracts.
-9. Determine what should be tested before implementation begins.
-
-Do not start by creating new files. First determine whether the requirement can be implemented by extending the existing design safely.
-
----
+Apply the frontend core's discovery procedure. For React, trace the affected route, component tree, Hooks, providers and typed props. Determine the actual parent/child boundaries before choosing a feature location.
 
 ---
 
@@ -68,13 +51,8 @@ src/
 ## Rules
 
 - Feature-specific code stays inside the feature.
-- Shared code moves to shared folders only when it is genuinely reused.
 - Avoid large generic `utils`, `helpers`, or `common` files containing unrelated logic.
-- Avoid circular dependencies.
 - Avoid deep relative imports when the project already provides aliases.
-- Do not reorganize the entire project as part of a feature change.
-
----
 
 ---
 
@@ -82,10 +60,8 @@ src/
 
 ## A component should
 
-- Have a clear responsibility.
 - Receive explicit inputs through typed props.
 - Expose intentional events/callbacks.
-- Be understandable without reading many unrelated files.
 - Prefer composition when behavior or layout must vary.
 
 ## Split a component when
@@ -116,7 +92,7 @@ PropertyDetail
 
 The parent component should coordinate page-level concerns such as data loading, permissions, mutations, layout, and page-level state. Child sections should have access only to the domain data and actions relevant to their responsibility.
 
-For direct parent-child communication, prefer typed props. However, do not force page-level or domain-level data through several intermediate components only to reach deeply nested sections. When many components inside the same page or feature consume the same stable resource or domain state, use a focused Context and domain Hook to avoid prop drilling.
+For direct parent-child communication, prefer typed props. However, do not force page-level or domain-level data through several intermediate components only to reach deeply nested sections. When sharing beyond direct children is required, use the mechanism selected by `../react-state-management/SKILL.md`.
 
 The objective is not to create the smallest possible components. The objective is to create **clear component boundaries** that improve readability, maintenance, reuse, and testability.
 
@@ -153,8 +129,6 @@ NewComponent.tsx
 
 ---
 
----
-
 ## 6. Props
 
 Use TypeScript to make component contracts explicit.
@@ -172,12 +146,9 @@ type UserCardProps = {
 - Prefer the minimum props needed by the component.
 - Use props for explicit communication between a component and its direct children.
 - Avoid passing entire objects when only one or two values are required, unless the object is the component's actual domain input.
-- Do not use intermediate components as transport layers for data they do not use. If the same page/domain data must cross several levels, prefer a focused Context instead of prop drilling.
 - Avoid boolean-prop explosions such as `isSmall`, `isBlue`, `isCompact`, `isAdmin`, `isBordered` when composition or variants would model the API better.
 - Do not copy props into state unless there is a real state-lifecycle reason.
 - Callback names should describe intent: `onSave`, `onDelete`, `onSelectionChange`.
 - Internal event handlers should use `handle...`: `handleSave`, `handleDelete`.
-
----
 
 ---

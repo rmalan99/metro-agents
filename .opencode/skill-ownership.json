@@ -1,0 +1,83 @@
+{
+  "rules": {
+    "delivery.authority": ".opencode/skills/hierarchical-software-delivery/SKILL.md",
+    "delivery.acceptance": ".opencode/skills/hierarchical-software-delivery/references/quality.md",
+    "delivery.concurrency": ".opencode/skills/hierarchical-software-delivery/references/concurrency.md",
+    "delivery.logging": ".opencode/logs/error-log.md",
+    "frontend.routing": ".opencode/skills/frontend/frontend-developer/SKILL.md",
+    "frontend.discovery": ".opencode/skills/frontend/frontend-developer/references/project-discovery.md",
+    "frontend.visual": ".opencode/skills/frontend/frontend-developer/references/design-system.md",
+    "frontend.components": ".opencode/skills/frontend/frontend-developer/references/component-contracts.md",
+    "frontend.data": ".opencode/skills/frontend/frontend-developer/references/data-and-integration.md",
+    "frontend.technical-quality": ".opencode/skills/frontend/frontend-developer/references/technical-quality.md",
+    "frontend.selectors": ".opencode/skills/frontend/frontend-developer/references/test-identifiers.md",
+    "frontend.forms": ".opencode/skills/frontend/frontend-forms/SKILL.md",
+    "frontend.tables": ".opencode/skills/frontend/frontend-tables/SKILL.md",
+    "frontend.backoffice": ".opencode/skills/frontend/backoffice-design/SKILL.md",
+    "frontend.dashboard": ".opencode/skills/frontend/backoffice-dashboards/SKILL.md",
+    "react.invariants": ".opencode/skills/frontend/react/react-core/SKILL.md",
+    "react.state": ".opencode/skills/frontend/react/react-state-management/SKILL.md",
+    "react.hooks": ".opencode/skills/frontend/react/react-hooks-effects-events/SKILL.md",
+    "todo.policy": "AGENTS.md",
+    "todo.arguments": ".agents/skills/todo-tracker/SKILL.md"
+  },
+  "artifacts": {
+    ".opencode/skills/hierarchical-software-delivery/references/schemas/refined-requirement.md": "refined_requirement",
+    ".opencode/skills/hierarchical-software-delivery/references/schemas/work-order.md": "work_order",
+    ".opencode/skills/hierarchical-software-delivery/references/schemas/development-task.md": "task",
+    ".opencode/skills/hierarchical-software-delivery/references/schemas/development-result.md": "task_result",
+    ".opencode/skills/hierarchical-software-delivery/references/schemas/qa-task.md": "task",
+    ".opencode/skills/hierarchical-software-delivery/references/schemas/qa-task-result.md": "qa_task_result",
+    ".opencode/skills/hierarchical-software-delivery/references/schemas/qa-result.md": "qa_result",
+    ".opencode/skills/hierarchical-software-delivery/references/schemas/defect.md": "defect",
+    ".opencode/skills/hierarchical-software-delivery/references/schemas/development-work-order-result.md": "work_order_result",
+    ".opencode/skills/hierarchical-software-delivery/references/schemas/task-quality.md": "quality",
+    ".opencode/skills/hierarchical-software-delivery/references/schemas/validation-evidence.md": "- check",
+    ".opencode/skills/hierarchical-software-delivery/references/schemas/lead-review.md": "lead_review",
+    ".opencode/skills/hierarchical-software-delivery/references/schemas/quality-summary.md": "quality_summary"
+  },
+  "restricted_reads": {
+    "orchestrator": [
+      ".opencode/skills/hierarchical-software-delivery/references/roles/orchestrator.md",
+      ".opencode/skills/hierarchical-software-delivery/references/quality.md",
+      ".opencode/skills/hierarchical-software-delivery/references/concurrency.md",
+      ".opencode/skills/hierarchical-software-delivery/references/schemas/refined-requirement.md",
+      ".opencode/skills/hierarchical-software-delivery/references/schemas/work-order.md",
+      ".opencode/skills/hierarchical-software-delivery/references/schemas/development-work-order-result.md",
+      ".opencode/skills/hierarchical-software-delivery/references/schemas/lead-review.md",
+      ".opencode/skills/hierarchical-software-delivery/references/schemas/quality-summary.md",
+      ".opencode/skills/hierarchical-software-delivery/references/schemas/validation-evidence.md",
+      ".opencode/skills/hierarchical-software-delivery/references/schemas/qa-result.md",
+      ".opencode/logs/error-log.md",
+      ".opencode/skills/hierarchical-software-delivery/references/schemas/task-quality.md",
+      ".opencode/skills/hierarchical-software-delivery/references/schemas/defect.md"
+    ],
+    "evaluator": [
+      ".opencode/skills/hierarchical-software-delivery/references/roles/evaluator.md",
+      ".opencode/skills/hierarchical-software-delivery/references/schemas/refined-requirement.md"
+    ]
+  },
+  "dispatch": {
+    "orchestrator": [
+      "evaluator",
+      "frontend-lead",
+      "backend-lead",
+      "qa-lead",
+      "error-logger"
+    ],
+    "evaluator": [],
+    "frontend-lead": [
+      "frontend-junior"
+    ],
+    "frontend-junior": [],
+    "backend-lead": [
+      "backend-junior"
+    ],
+    "backend-junior": [],
+    "qa-lead": [
+      "qa-junior"
+    ],
+    "qa-junior": [],
+    "error-logger": []
+  }
+}

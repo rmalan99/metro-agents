@@ -17,19 +17,17 @@ For React work, also load `react-core`. It translates the base into React and ro
 | React entry and UI integration | `react/react-core/SKILL.md` |
 | React concepts | Relevant existing child from the `react-core` index |
 | Tables/lists in any application | `frontend-tables/SKILL.md` |
+| Forms/fields in any application | `frontend-forms/SKILL.md` |
 | Administrative composition | `backoffice-design/SKILL.md` |
 | Administrative metrics/charts | `backoffice-dashboards/SKILL.md` |
 
-The five UI implementation references live under `react/react-core/references/ui/`: `mui.md`, `shadcn.md`, `chakra.md`, `tailwind.md`, `css.md`. Read only the adopted/selected system when setup, theming, component work or diagnosis requires it. Verify installed versions before applying APIs. Existence of a guide does not authorize installing its library.
+The five UI implementation references live under `react/react-core/references/ui/`: MUI, shadcn/ui, Chakra, Tailwind and CSS. Read only the adopted/selected system when setup, theming, component work or diagnosis requires it. Verify installed versions before applying APIs. Existence of a guide does not authorize installing its library.
 
-## React concept skills
-- `react-architecture-components` — discovery, architecture, composition and props.
-- `react-state-management` — ownership, state shape and sharing.
-- `react-hooks-effects-events` — Hooks, synchronization and events.
-- `react-data-types-forms` — APIs, typing and forms.
-- `react-rendering-ui-accessibility` — lists, rendering, styles and accessibility.
-- `react-performance-errors-security` — performance, errors and security.
-- `react-testing-quality-workflow` — testing, dependency policy and delivery.
+## Rule ownership
+
+The ownership table and task router in `frontend-developer` are canonical. The React concept router lives only in `react-core`; do not maintain a duplicate concept index here. General form behavior/references belong to `frontend-forms`, not React.
+
+Child skills add procedures specific to their responsibility and inherit general instructions without copying them. Prompts add role authority/handoff, and project contracts record actual decisions rather than reproducing skill rules. Reuse already-loaded context.
 
 ## Runtime integration
 

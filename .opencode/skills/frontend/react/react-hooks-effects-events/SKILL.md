@@ -1,6 +1,6 @@
 ---
 name: react-hooks-effects-events
-version: 2.1.0
+version: 2.4.0
 description: Hooks, domain hooks, effect boundaries, synchronization, event handling, and separation of render logic from side effects.
 ---
 
@@ -10,7 +10,6 @@ description: Hooks, domain hooks, effect boundaries, synchronization, event hand
 
 This is a child skill of `react-core`. Load it only when the current React task involves the concepts covered here.
 
-It expands sections 9, 10, 11 of the original React Frontend Developer skill. It does not introduce additional libraries or technologies beyond what those concepts require. Existing project choices remain authoritative.
 
 ---
 
@@ -18,8 +17,8 @@ It expands sections 9, 10, 11 of the original React Frontend Developer skill. It
 
 ## Rules of Hooks
 
-- Call Hooks only at the top level of React components or custom Hooks.
-- Never call Hooks conditionally, inside loops, nested functions, or event handlers.
+- Call conventional Hooks only at the top level of React components or custom Hooks; the use(resource) exception is described below.
+- Conventional Hooks cannot be conditional or called in loops, nested callbacks or event handlers. React 19+ use(resource) is a distinct exception: it may be conditional/in a loop within a component or Hook, but not inside try/catch. Check the installed version; do not apply the exception to useState/useEffect or arbitrary Hooks.
 - Custom Hooks must begin with `use`.
 - A custom Hook should encapsulate reusable behavior or provide a meaningful domain API, not merely move arbitrary lines to another file.
 
@@ -42,49 +41,9 @@ A component that consumes `usePropertyDetail()` should not need to know whether 
 
 This makes the domain boundary easier to evolve and test.
 
-### Context Hooks
+### State integration boundary
 
-Expose domain Context through a dedicated Hook:
-
-```tsx
-export function usePropertyDetail() {
-  const context = useContext(PropertyDetailContext);
-
-  if (!context) {
-    throw new Error('usePropertyDetail must be used inside PropertyDetailProvider');
-  }
-
-  return context;
-}
-```
-
-Do not repeat raw `useContext(PropertyDetailContext)` across many feature components when a domain Hook can define the intended API and provider invariant once.
-
-### Redux Hooks
-
-When Redux is used:
-
-- Prefer application-typed hooks such as `useAppSelector` and `useAppDispatch`.
-- Prefer selectors over direct knowledge of deep store structure in components.
-- Use feature/domain Hooks when several components repeat the same selector/action composition.
-- A domain Hook may coordinate Redux selectors and actions, but it must not hide unrelated state or become an all-purpose store facade.
-
-Good:
-
-```text
-useCurrentUser
-usePropertyPermissions
-useCheckout
-```
-
-Poor:
-
-```text
-useHelpers
-useEverything
-useReduxData
-useComponentLogic
-```
+Context/Redux access patterns and typed selector hooks are owned by `../react-state-management/SKILL.md`; consult that owner when implementing a domain Hook that exposes them. This skill owns the Hook API and external-system lifecycle.
 
 ## Hook responsibility
 
@@ -99,11 +58,9 @@ Avoid Hooks that:
 
 ---
 
----
-
 ## 10. `useEffect`
 
-`useEffect` is an **escape hatch for synchronization with systems outside React**.
+Apply the render/event boundary from `react-core`. For an external synchronization, identify the lifecycle below.
 
 Appropriate examples:
 
@@ -114,29 +71,6 @@ Appropriate examples:
 - Third-party widgets.
 - Imperative libraries.
 - Network synchronization when the project's data layer does not handle it.
-
-## Do NOT use an Effect for
-
-- Calculating a value for rendering.
-- Filtering or sorting local data for display.
-- Updating one state variable because another state variable changed when the value can be derived.
-- Handling a user action that belongs directly in an event handler.
-
-Bad:
-
-```tsx
-const [fullName, setFullName] = useState('');
-
-useEffect(() => {
-  setFullName(`${firstName} ${lastName}`);
-}, [firstName, lastName]);
-```
-
-Good:
-
-```tsx
-const fullName = `${firstName} ${lastName}`;
-```
 
 ## Effect requirements
 
@@ -151,11 +85,9 @@ Never silence hook dependency linting merely to suppress a warning. Fix the depe
 
 ---
 
----
-
 ## 11. Events
 
-User-driven operations belong in event handlers.
+For a user operation, bind its event directly to the operation:
 
 Examples:
 
@@ -175,7 +107,5 @@ const handleSubmit = async () => {
 ```
 
 instead of setting a state flag and using an Effect to detect the flag and perform the save.
-
----
 
 ---
