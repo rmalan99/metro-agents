@@ -1,6 +1,6 @@
 ---
 name: frontend-forms
-version: 1.0.0
+version: 1.1.0
 description: Tool-independent reactive form and field contract: dirty/touched validation, inline errors, backend mapping and focus, shared field composition, specialized controls and form/data adapters.
 ---
 
@@ -10,7 +10,7 @@ description: Tool-independent reactive form and field contract: dirty/touched va
 
 Apply to every generated or modified form regardless of UI library or framework. Follow `../frontend-developer/SKILL.md`, its theme and test-identifier contract. The active tool supplies state/ref mechanics and the selected UI reference supplies supported components/slots. Reuse the project's form/validation library; do not install one merely because this skill exists.
 
-The default selection rule is: 10 or fewer options use a select; more than 10 use a searchable combobox. If the total is remote/unknown or users need to locate items by text, prefer a searchable combobox even when the current response contains fewer items.
+Selection mode and option-count rules are owned by `references/fields/selection.md`.
 
 ## Reference ownership and selective loading
 Frontend owns form behavior and its implementation references. The active tool supplies technical mechanisms but does not route or duplicate this contract.
@@ -79,33 +79,24 @@ Map the actual backend response through a feature-owned adapter to registered fi
 - Attach known field errors below their fields and mark them visibly invalid regardless of prior dirty/touched status.
 - Put unmapped, cross-field or nonvalidation failures in a form-level message; never silently discard them.
 - Preserve entered values and allow correction/resubmission. Prevent duplicate requests while submission is pending.
-- Reveal the first invalid field in logical form order, not arbitrary response order: open the containing section/tab/step where safe, render it, then focus its actual control and scroll it into view without sticky-header obstruction.
+- Reveal the first invalid field in logical form order, not arbitrary response order: open the containing section/tab/step where safe, render it through its lifecycle (not an arbitrary timeout), then focus its actual control and scroll it into view without sticky-header obstruction.
 - If a field cannot be revealed/focused, provide a navigable error summary or clear form-level explanation. Do not silently move focus to a hidden/disabled node.
 - Do not steal focus during ordinary on-change validation. Focus navigation is for failed submission or an explicit error-summary action. Honor reduced-motion preferences for scrolling.
 - On a field edit, clear or mark stale only that field's obsolete server error and rerun validation. Do not clear unrelated server errors.
 - Ignore stale server errors/results when the values or dynamic array identity no longer match the submitted snapshot. Do not attach an error for an old array position to a different record.
 
-## 5. Required specialized controls
+## 5. Field variant routing
 
-| Variant | Behavior |
+Load only the variant being implemented/verified. Its behavior and additional checks have a single owner:
+
+| Variant | Reference |
 |---|---|
-| Input field | Text/numeric/email as appropriate; shared label, helper, placeholder, adornments and inline feedback |
-| Password field | Mandatory internal show/hide button; named state-aware action, non-submit type, keyboard access; retain value, focus/caret where possible and suitable autocomplete |
-| Phone field | Locale/country-aware mask and area/country code support; distinguish international dialing code from local area code; validate actual number rather than mask length |
-| Date field | Activating its trigger/control opens an accessible date-selection dialog; support keyboard/manual entry where appropriate and constraints/format guidance |
-| Combobox | Prefer for more than 10 options; internal search, selection by stable value, loading/empty/error feedback and keyboard behavior |
-| Select | For up to 10 options; use a custom accessible popup from the adopted UI system, visually consistent with combobox, not a mismatched browser-native popup by default |
-| Mask field | Explicit mask/format, useful prompt, partial-entry validation and separate canonical value |
-
-Password toggling must not submit the form, clear the value or expose the secret in telemetry/test IDs. Phone formatting must not invent a country from UI language; derive it from an explicit product/default selection. Accept paste, leading zeros and editing correctly. Use a compatible phone/mask library only when current tooling lacks the needed capability.
-
-Dates require clear date-only vs timestamp semantics and agreed time-zone handling. Do not convert a date-only selection through UTC in a way that shifts the calendar day. Closing the dialog restores focus; bounds and disabled dates must align with validation.
-
-Custom select and combobox are separate accessible interaction patterns, not just styled divs. Reuse library primitives for roles, keyboard navigation, active option and Escape behavior. Search text is distinct from selected value. Unless allowed, typing an unknown label does not create a valid option.
-
-For remote options, debounce search, guard stale responses, retain selected labels and use the actual paging/query contract. A result page of 10 is not proof the dataset has only 10 options.
-
-Masks must support paste/delete/caret behavior and mobile input. Formatting characters are not automatically part of the backend payload; define normalization explicitly. A mask alone is not validation.
+| Input | `references/fields/input.md` |
+| Password | `references/fields/password.md` |
+| Phone | `references/fields/phone.md` |
+| Date | `references/fields/date.md` |
+| Select / searchable combobox | `references/fields/selection.md` |
+| Mask | `references/fields/mask.md` |
 
 ## 6. Composition and integration boundaries
 Prefer compound components when compatible with the adopted library. Preserve equivalent public composition when it uses another supported pattern; do not force a new API for stylistic uniformity.
@@ -123,6 +114,6 @@ Test reactive error after edit/blur, no pristine errors, correction clearing, su
 
 Verify backend error reveals/focuses the correct reachable field, preserves input and does not move focus while typing. Check required marker/semantics, helper association, placeholder-equivalent guidance, danger states and keyboard focus.
 
-For relevant variants, test password toggle without submission, phone/mask paste and normalization, date dialog/time-zone behavior, select boundary at 10/11 options, combobox no matches and stale remote search. Reuse `data-testid` scopes while asserting meaningful behavior and accessible semantics.
+Use the active variant reference for additional acceptance cases. Reuse the selector contract for targeted behavioral/semantic checks.
 
 Record form-tool integration, backend mapping location, focus/reveal mechanism and actual checks in the frontend contract/development evidence. Report missing integration or unexecuted runtime checks honestly.

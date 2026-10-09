@@ -1,124 +1,18 @@
-# Canonical Delivery Contracts
+# Canonical delivery contract index
 
-## Work Order
+Compatibility entry point; no schemas are defined here. The core routes active roles to only their required artifacts.
 
-```yaml
-work_order:
-  id: WO-<TEAM>-001
-  team: frontend | backend | qa
-  requirement_id: REQ-001
-  objective: <team outcome>
-  requirements: []
-  business_rules: []
-  contracts: []
-  dependencies: []
-  constraints: []
-  expected_result: []
-  acceptance_criteria: []
-  evidence_expected: []
-  junior_slot_budget: 1 # Orchestrator reserves 1 or 2; total unfinished budgets <= 4
-```
+| Artifact | Owner |
+|---|---|
+| Refined requirement | [Schema](schemas/refined-requirement.md) |
+| Work Order | [Schema](schemas/work-order.md) |
+| Development task/result | [Task](schemas/development-task.md), [Result](schemas/development-result.md) |
+| Development Work Order report | [Schema](schemas/development-work-order-result.md) |
+| QA task/task result | [Task](schemas/qa-task.md), [Result](schemas/qa-task-result.md) |
+| QA Work Order report | [Schema](schemas/qa-result.md) |
+| Defect | [Schema](schemas/defect.md) |
+| Task quality | [Schema](schemas/task-quality.md) |
+| Validation entry | [Schema](schemas/validation-evidence.md) |
+| Review/quality summary | [Review](schemas/lead-review.md), [Summary](schemas/quality-summary.md) |
 
-## Development task
-
-```yaml
-task:
-  id: FE-001 | BE-001
-  parent_work_order: <id>
-  objective: <bounded outcome>
-  instructions: []
-  scope:
-    allowed: []
-    forbidden: []
-  requirements: []
-  constraints: []
-  contracts: []
-  dependencies: []
-  expected_result: []
-  validation: []
-```
-
-## Development result
-
-```yaml
-task_result:
-  task_id: <id>
-  status: COMPLETED | FAILED | BLOCKED
-  files_changed: []
-  implementation_summary: []
-  validation_evidence: []
-  requirements_checked: []
-  issues: []
-  out_of_scope_observations: []
-```
-
-## QA result
-
-```yaml
-qa_result:
-  work_order_id: <id>
-  status: PASSED | FAILED | BLOCKED
-  acceptance_criteria: []
-  tests_created: []
-  tests_executed: []
-  defects: []
-  regression_risks: []
-  unresolved: []
-```
-
-## Required task quality fields
-
-Apply these fields to development and QA tasks in addition to role-specific fields. For read-only tasks, use empty write_paths and explain any unavailable check.
-
-```yaml
-quality:
-  acceptance_criteria: [] # requirement/criterion IDs and observable outcomes
-  risk: LOW | MEDIUM | HIGH
-  write_paths: [] # explicit files or bounded directories
-  read_dependencies: [] # artifacts that must remain stable during execution
-  exclusive_resources: [] # ports, databases, fixtures, generated outputs
-  prerequisite_acceptances: [] # accepted task IDs/evidence
-  validation_plan: [] # check, working directory, expected behavior, mandatory flag
-  not_applicable: [] # check and reason
-```
-
-## Validation evidence entry
-
-Use this structure in validation_evidence or tests_executed. Preserve the runner's actual exit status; optional skipped checks do not count as passed.
-
-```yaml
-- check: <command or functional check>
-  working_directory: <path>
-  mandatory: true
-  expected: <observable outcome>
-  actual: <observed outcome>
-  result: PASS | FAIL | SKIPPED | NOT_RUN | BLOCKED
-  exit_code: null # actual code for commands; null for non-command checks
-  test_counts: null # actual passed/failed/skipped counts when available
-  evidence: <output summary or artifact reference>
-```
-
-## Lead review and Work Order quality report
-
-```yaml
-lead_review:
-  task_id: <id>
-  status: ACCEPTED | CORRECTION_REQUIRED | BLOCKED
-  changes_inspected: []
-  acceptance_criteria_checked: []
-  contracts_checked: []
-  evidence_reviewed: []
-  reasons: []
-  correction_attempts: 0
-
-quality_summary:
-  integration_evidence: []
-  mandatory_checks_unresolved: []
-  lead_rejections: 0
-  correction_attempts: 0
-  qa_defects: 0
-  recurring_causes: []
-  concurrency_observed: <parallel or sequential, with evidence/limitations>
-```
-
-READY_FOR_QA requires reviewed integration evidence and no unresolved mandatory checks. PASSED requires independent evidence for all mandatory criteria and affected regression. COMPLETED requires both development and QA gates. A partial or unavailable validation is reported explicitly, never counted as success.
+Read [Quality](quality.md) or [Concurrency](concurrency.md) only for their applicable role/action. Do not load the whole artifact catalog for every invocation.

@@ -1,11 +1,9 @@
 {
   "mcpServers": {
     "todo-mcp": {
-      "command": "node",
+      "command": "python3",
       "args": [
-        "/home/queso/.cursor-server/extensions/hurtis.todo-2.0.0-universal/bin/todo-mcp.js",
-        "--workspace",
-        "/home/queso/work/personal/metro-agents"
+        ".opencode/tools/run-todo-mcp.py"
       ]
     }
   }

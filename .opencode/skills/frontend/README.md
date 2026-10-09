@@ -21,7 +21,7 @@ For React work, also load `react-core`. It translates the base into React and ro
 | Administrative composition | `backoffice-design/SKILL.md` |
 | Administrative metrics/charts | `backoffice-dashboards/SKILL.md` |
 
-The five UI implementation references live under `react/react-core/references/ui/`: `mui.md`, `shadcn.md`, `chakra.md`, `tailwind.md`, `css.md`. Read only the adopted/selected system when setup, theming, component work or diagnosis requires it. Verify installed versions before applying APIs. Existence of a guide does not authorize installing its library.
+The five UI implementation references live under `react/react-core/references/ui/`: MUI, shadcn/ui, Chakra, Tailwind and CSS. Read only the adopted/selected system when setup, theming, component work or diagnosis requires it. Verify installed versions before applying APIs. Existence of a guide does not authorize installing its library.
 
 ## Rule ownership
 

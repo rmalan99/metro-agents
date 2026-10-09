@@ -35,23 +35,11 @@ Only pass current server errors here; the owner clears/invalidates an obsolete e
 
 Native control IDs may use the active tool's stable accessibility-ID mechanisms when appropriate; test IDs use the separate explicit instance contract and must not derive from those generated IDs. Forward focus refs to the actual input/trigger, not an outer div. Use the active tool's supported control-reference/focus mechanism.
 
-## Reactive validation and asynchronous work
-Configure change/blur/revalidation mode through the installed form tool or implement equivalent behavior in the owner. Do not rely on submit-only validation. Show errors only under the shared exposure rule, except current backend errors.
+## Binding asynchronous checks and responses
 
-Cheap synchronous rules run on the new value directly. For expensive/remote rules, debounce the check, not value updates/input rendering. Clean up timers and pending checks on value change/unmount. Use cancellation or a generation/snapshot check so outdated results cannot become current errors. Keep an intentional pending state and await/flush essential checks before submit.
+Use the adopted tool's validation/error APIs to implement the lifecycle owned by `../SKILL.md`. Associate request generations/snapshots with their field registration and dispose pending work when that registration unmounts. Translate the feature's actual backend paths to current registered controls, including stable dynamic-array identity.
 
-Revalidate dependencies through the form tool's supported mechanism; do not duplicate derived validity into another state store. If a tool's dirty semantics differ from the shared contract, adapt exposure explicitly rather than assuming configuration defaults implement it.
-
-## Submission and backend errors
-Use the actual service/client contract, not a universal guessed response shape. Map field paths in a feature adapter, including stable identities for dynamic arrays. Keep form-level errors distinct. Apply current errors to the form tool's supported error API or equivalent owner state.
-
-After client/server submission failure:
-1. Resolve invalid registered fields in logical form order.
-2. Reveal their parent section/tab/step when possible.
-3. Wait until the control is rendered through the framework's supported lifecycle, then use its focus handle and deliberate scrolling.
-4. If it remains unavailable, show a useful summary/navigation fallback.
-
-Do not use arbitrary timeout delays as the primary mount/focus mechanism. Do not build a reactive observer that repeatedly steals focus whenever errors change; focus only the failed submission event/reveal lifecycle. Preserve values and account for users editing while requests are pending.
+Expose focus/reveal handles for registered controls through the active tool's mount lifecycle. Keep transport/error-shape parsing in the feature adapter; a generic field only consumes normalized feedback.
 
 ## Specialized controls and acceptance
 

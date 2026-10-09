@@ -30,6 +30,17 @@ Use a small spacing scale, consistent radii, typography roles and layering conve
 
 ## 3. Choose the owner
 
+Place changes by scope:
+
+| Change affects | Owner |
+|---|---|
+| Entire application | Theme or global base |
+| Every instance of one component | Component defaults/overrides |
+| Repeated intentional treatment | Named component variant |
+| Product-specific behavior | Shared product component |
+| One screen's composition | Local layout |
+
+
 If three screens compensate for the same button shape, fix the button default. If only a confirmation action is destructive, use a danger variant. If one page has a two-column composition, keep it in that layout. Do not use global overrides to solve one screen's exception.
 
 ## 4. Establish representative components

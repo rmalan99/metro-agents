@@ -1,6 +1,6 @@
 ---
 name: react-hooks-effects-events
-version: 2.3.0
+version: 2.4.0
 description: Hooks, domain hooks, effect boundaries, synchronization, event handling, and separation of render logic from side effects.
 ---
 
@@ -17,8 +17,8 @@ This is a child skill of `react-core`. Load it only when the current React task 
 
 ## Rules of Hooks
 
-- Call Hooks only at the top level of React components or custom Hooks.
-- Never call Hooks conditionally, inside loops, nested functions, or event handlers.
+- Call conventional Hooks only at the top level of React components or custom Hooks; the use(resource) exception is described below.
+- Conventional Hooks cannot be conditional or called in loops, nested callbacks or event handlers. React 19+ use(resource) is a distinct exception: it may be conditional/in a loop within a component or Hook, but not inside try/catch. Check the installed version; do not apply the exception to useState/useEffect or arbitrary Hooks.
 - Custom Hooks must begin with `use`.
 - A custom Hook should encapsulate reusable behavior or provide a meaningful domain API, not merely move arbitrary lines to another file.
 

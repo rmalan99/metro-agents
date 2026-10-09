@@ -6,4 +6,4 @@ Implement `frontend-forms` with shared semantic markup and classes/data attribut
 
 CSS does not provide reactive validation, backend mapping, password toggling, masks or date-dialog behavior. Keep those responsibilities in field variants/form adapters. Every required field needs the visible marker and programmatic state, and every variant accepts helper and empty-value guidance.
 
-Custom select and searchable combobox share visual tokens but need their own complete accessible interaction behavior. Use the 10/11 option threshold and an accessible dialog for date selection. Do not replace these requirements with a visually styled native select or noninteractive calendar. If a compatible primitive is needed, follow the agreed dependency process.
+Custom select and searchable combobox share visual tokens but need their own complete accessible interaction behavior. Apply the selection mode from the parent's field reference and an accessible dialog for date selection. Do not replace these requirements with a visually styled native select or noninteractive calendar. If a compatible primitive is needed, follow the agreed dependency process.
