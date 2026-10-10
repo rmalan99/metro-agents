@@ -165,6 +165,7 @@
         "bash": {
           "*": "allow",
           "python3 .opencode/tools/append-error-log.py": "deny",
+          "python3 .opencode/tools/append-error-log.py *": "deny",
           "git push*": "deny",
           "git commit*": "deny",
           "git reset*": "deny",
@@ -248,6 +249,7 @@
         "bash": {
           "*": "allow",
           "python3 .opencode/tools/append-error-log.py": "deny",
+          "python3 .opencode/tools/append-error-log.py *": "deny",
           "git push*": "deny",
           "git commit*": "deny",
           "git reset*": "deny",
@@ -317,6 +319,7 @@
         "bash": {
           "*": "allow",
           "python3 .opencode/tools/append-error-log.py": "deny",
+          "python3 .opencode/tools/append-error-log.py *": "deny",
           "git push*": "deny",
           "git commit*": "deny",
           "git reset*": "deny",
@@ -349,7 +352,8 @@
         "skill": "deny",
         "bash": {
           "*": "deny",
-          "python3 .opencode/tools/append-error-log.py": "allow"
+          "python3 .opencode/tools/append-error-log.py": "allow",
+          "python3 .opencode/tools/append-error-log.py *": "allow"
         }
       }
     }

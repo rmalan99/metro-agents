@@ -227,14 +227,21 @@ def validate(root):
         if actual != set(allowed) or (isinstance(rules, dict) and rules.get("*") != "deny"):
             errors.append(f"Agent {name}: delegation differs from canonical role scope")
     logger_command = "python3 .opencode/tools/append-error-log.py"
+    logger_command_with_input = logger_command + " <<'JSON'"
     for name, agent in agents.items():
         bash = agent.get("permission", {}).get("bash", "deny")
-        action = action_for(bash, logger_command)
         expected = "allow" if name == "error-logger" else "deny"
-        if action != expected:
-            errors.append(f"Agent {name}: error-log writer permission must be {expected}")
+        for command in (logger_command, logger_command_with_input):
+            if action_for(bash, command) != expected:
+                errors.append(f"Agent {name}: error-log writer permission must be {expected}")
+                break
     logger_bash = agents.get("error-logger", {}).get("permission", {}).get("bash", {})
-    if not isinstance(logger_bash, dict) or logger_bash != {"*": "deny", logger_command: "allow"}:
+    expected_logger_bash = {
+        "*": "deny",
+        logger_command: "allow",
+        logger_command + " *": "allow",
+    }
+    if not isinstance(logger_bash, dict) or logger_bash != expected_logger_bash:
         errors.append("Agent error-logger: bash scope must contain only the append helper")
     todo = cursor.get("mcpServers", {}).get("todo-mcp", {})
     if todo.get("command") != "python3" or todo.get("args") != [".opencode/tools/run-todo-mcp.py"]:

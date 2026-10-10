@@ -122,6 +122,7 @@ class RepositoryTests(unittest.TestCase):
     def test_error_logger_is_the_only_append_helper_writer(self):
         command = "python3 .opencode/tools/append-error-log.py"
         self.config_change(lambda c: c["agent"]["qa-lead"]["permission"]["bash"].update({command: "allow"}), "writer permission must be deny")
+        self.config_change(lambda c: c["agent"]["error-logger"]["permission"]["bash"].pop(command + " *"), "writer permission must be allow")
         self.config_change(lambda c: c["agent"]["error-logger"]["permission"]["bash"].update({"python3 other.py": "allow"}), "bash scope must contain only")
 
     def test_missing_owner_and_schema_definition_fail(self):

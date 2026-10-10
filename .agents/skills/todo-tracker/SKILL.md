@@ -5,9 +5,10 @@ description: View, add, update, move, and delete tasks/todos in the active proje
 
 # TODO Tracker MCP Skill
 
-Use the [repository policy](../../../AGENTS.md) as the authority for task management. This skill owns MCP tool names/arguments only. Load it for task operations, not general development.
+When the user asks to view, query, add, update, start, complete, block, or delete tasks:
+**MANDATORY: DO NOT edit the `.todo` file directly.** Direct file edits bypass extension state and break real-time VS Code UI synchronization.
 
-Invoke the configured todo-mcp (or todo-extension) tool through the active client's MCP mechanism; do not assume a generic call_mcp_tool exists in every client. Configuration guidance is in [TODO setup](../../../docs/todo-mcp.md).
+Always invoke the `todo-mcp` (or `todo-extension`) MCP server using `call_mcp_tool`:
 
 ## Available Tools & Exact Arguments
 
