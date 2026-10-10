@@ -58,9 +58,9 @@
           "evaluator": "allow",
           "frontend-lead": "allow",
           "backend-lead": "allow",
-          "qa-lead": "allow",
-          "error-logger": "allow"
-        }
+          "qa-lead": "allow"
+        },
+        "report-error": "allow"
       }
     },
     "evaluator": {
@@ -91,7 +91,8 @@
         "skill": {
           "*": "deny",
           "hierarchical-software-delivery": "allow"
-        }
+        },
+        "report-error": "deny"
       }
     },
     "frontend-lead": {
@@ -122,8 +123,7 @@
         },
         "task": {
           "*": "deny",
-          "frontend-junior": "allow",
-          "error-logger": "allow"
+          "frontend-junior": "allow"
         },
         "skill": {
           "*": "deny",
@@ -142,7 +142,8 @@
           "react-state-management": "allow",
           "react-testing-quality-workflow": "allow",
           "frontend-forms": "allow"
-        }
+        },
+        "report-error": "allow"
       }
     },
     "frontend-junior": {
@@ -165,8 +166,6 @@
         "task": "deny",
         "bash": {
           "*": "allow",
-          "python3 .opencode/tools/append-error-log.py": "deny",
-          "python3 .opencode/tools/append-error-log.py *": "deny",
           "git push*": "deny",
           "git commit*": "deny",
           "git reset*": "deny",
@@ -190,7 +189,8 @@
           "react-state-management": "allow",
           "react-testing-quality-workflow": "allow",
           "frontend-forms": "allow"
-        }
+        },
+        "report-error": "deny"
       }
     },
     "backend-lead": {
@@ -221,13 +221,13 @@
         },
         "task": {
           "*": "deny",
-          "backend-junior": "allow",
-          "error-logger": "allow"
+          "backend-junior": "allow"
         },
         "skill": {
           "*": "deny",
           "hierarchical-software-delivery": "allow"
-        }
+        },
+        "report-error": "allow"
       }
     },
     "backend-junior": {
@@ -250,8 +250,6 @@
         "task": "deny",
         "bash": {
           "*": "allow",
-          "python3 .opencode/tools/append-error-log.py": "deny",
-          "python3 .opencode/tools/append-error-log.py *": "deny",
           "git push*": "deny",
           "git commit*": "deny",
           "git reset*": "deny",
@@ -261,7 +259,8 @@
         "skill": {
           "*": "deny",
           "hierarchical-software-delivery": "allow"
-        }
+        },
+        "report-error": "deny"
       }
     },
     "qa-lead": {
@@ -291,13 +290,13 @@
         },
         "task": {
           "*": "deny",
-          "qa-junior": "allow",
-          "error-logger": "allow"
+          "qa-junior": "allow"
         },
         "skill": {
           "*": "deny",
           "hierarchical-software-delivery": "allow"
-        }
+        },
+        "report-error": "allow"
       }
     },
     "qa-junior": {
@@ -320,8 +319,6 @@
         "task": "deny",
         "bash": {
           "*": "allow",
-          "python3 .opencode/tools/append-error-log.py": "deny",
-          "python3 .opencode/tools/append-error-log.py *": "deny",
           "git push*": "deny",
           "git commit*": "deny",
           "git reset*": "deny",
@@ -331,32 +328,8 @@
         "skill": {
           "*": "deny",
           "hierarchical-software-delivery": "allow"
-        }
-      }
-    },
-    "error-logger": {
-      "description": "Append only explicitly reported errors and corrections to the error log; never analyze or fix.",
-      "mode": "subagent",
-      "hidden": true,
-      "model": "openai/gpt-5.6-luna",
-      "reasoningEffort": "low",
-      "textVerbosity": "low",
-      "prompt": "{file:./.opencode/prompts/error-logger.md}",
-      "permission": {
-        "*": "deny",
-        "read": "deny",
-        "edit": "deny",
-        "glob": "deny",
-        "grep": "deny",
-        "list": "deny",
-        "task": "deny",
-        "question": "deny",
-        "skill": "deny",
-        "bash": {
-          "*": "deny",
-          "python3 .opencode/tools/append-error-log.py": "allow",
-          "python3 .opencode/tools/append-error-log.py *": "allow"
-        }
+        },
+        "report-error": "deny"
       }
     }
   }

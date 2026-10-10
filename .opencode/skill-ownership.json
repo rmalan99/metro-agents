@@ -64,25 +64,20 @@
       "evaluator",
       "frontend-lead",
       "backend-lead",
-      "qa-lead",
-      "error-logger"
+      "qa-lead"
     ],
     "evaluator": [],
     "frontend-lead": [
-      "frontend-junior",
-      "error-logger"
+      "frontend-junior"
     ],
     "frontend-junior": [],
     "backend-lead": [
-      "backend-junior",
-      "error-logger"
+      "backend-junior"
     ],
     "backend-junior": [],
     "qa-lead": [
-      "qa-junior",
-      "error-logger"
+      "qa-junior"
     ],
-    "qa-junior": [],
-    "error-logger": []
+    "qa-junior": []
   }
 }
