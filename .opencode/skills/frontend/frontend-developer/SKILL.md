@@ -19,6 +19,7 @@ Load this core once per invocation and only the triggered references below. Anot
 | Need / canonical responsibility | Owner to load |
 |---|---|
 | Missing project decisions, architecture change or UI-system choice | `references/project-discovery.md` |
+| Establish or migrate a shared UI baseline/profile | `../ui-system-architect/SKILL.md` |
 | Shared theme, tokens or platform-wide visual adjustment | `references/design-system.md` |
 | Generate/change components, interactions or adaptable UI | `references/component-contracts.md` |
 | State, requests, mutations, permissions or integration/performance | `references/data-and-integration.md` |

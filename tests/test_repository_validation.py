@@ -31,6 +31,15 @@ class JsoncTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Unterminated"):
             validator.jsonc_text('{/* invalid')
 
+    def test_reject_non_finite_json_numbers(self):
+        path = ROOT / ".opencode/skills/frontend/ui-system-architect/assets/tokens.json"
+        source = path.read_text().replace('"baseUnit": 4', '"baseUnit": NaN')
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json") as handle:
+            handle.write(source)
+            handle.flush()
+            with self.assertRaisesRegex(ValueError, "Invalid JSON constant"):
+                validator.load_json(Path(handle.name))
+
     def test_longer_markdown_fence_does_not_close_on_inner_example(self):
         prose, blocks = validator.prose_and_blocks("Before\n````md\n```ts\nx\n```\n````\nAfter")
         self.assertEqual(len(blocks), 1)
@@ -43,7 +52,7 @@ class RepositoryTests(unittest.TestCase):
     def setUpClass(cls):
         cls.temp = tempfile.TemporaryDirectory(prefix="metro-validator-")
         cls.fixture = Path(cls.temp.name) / "repo"
-        shutil.copytree(ROOT, cls.fixture, ignore=shutil.ignore_patterns(".git", "work", "__pycache__"))
+        shutil.copytree(ROOT, cls.fixture, ignore=shutil.ignore_patterns(".git", ".codegraph", "work", "__pycache__"))
 
     @classmethod
     def tearDownClass(cls):
@@ -67,6 +76,16 @@ class RepositoryTests(unittest.TestCase):
         config = validator.load_json(self.fixture / "opencode.jsonc")
         change(config)
         self.mutate("opencode.jsonc", json.dumps(config), expected)
+
+    def remove(self, relative, expected):
+        path = self.fixture / relative
+        old = path.read_text()
+        path.unlink()
+        try:
+            errors = validator.validate(self.fixture)
+            self.assertTrue(any(expected in error for error in errors), errors)
+        finally:
+            path.write_text(old)
 
     def test_current_repository_and_relocated_fixture_pass(self):
         self.assertEqual(validator.validate(ROOT), [])
@@ -130,6 +149,72 @@ class RepositoryTests(unittest.TestCase):
         registry["rules"]["frontend.forms"] = "missing.md"
         self.mutate(".opencode/skill-ownership.json", json.dumps(registry), "missing owner")
         self.mutate(".opencode/skills/hierarchical-software-delivery/references/schemas/task-quality.md", "# No schema\n", "missing canonical definition")
+
+    def test_ui_system_tokens_and_references_are_validated(self):
+        tokens_path = ".opencode/skills/frontend/ui-system-architect/assets/tokens.json"
+        tokens = validator.load_json(self.fixture / tokens_path)
+        tokens["$schema"] = "missing.schema.json"
+        self.mutate(tokens_path, json.dumps(tokens), "invalid schema reference")
+
+        del tokens["component"]["button"]["md"]
+        tokens["$schema"] = "./tokens.schema.json"
+        self.mutate(tokens_path, json.dumps(tokens), "missing required path component.button.md")
+
+        components_path = ".opencode/skills/frontend/ui-system-architect/references/profiles/backoffice/components.md"
+        components = (self.fixture / components_path).read_text()
+        self.mutate(components_path, components.replace("{component.button.md}", "{component.button.absent}"), "unknown UI token")
+
+    def test_ui_system_accessibility_and_breakpoint_invariants_are_validated(self):
+        tokens_path = ".opencode/skills/frontend/ui-system-architect/assets/tokens.json"
+        tokens = validator.load_json(self.fixture / tokens_path)
+        tokens["control"]["hitArea"]["minimum"] = "32px"
+        self.mutate(tokens_path, json.dumps(tokens), "minimum hit area")
+
+        tokens["control"]["hitArea"]["minimum"] = "40px"
+        tokens["breakpoint"]["lg"] = "800px"
+        self.mutate(tokens_path, json.dumps(tokens), "strictly increasing")
+
+    def test_ui_system_schema_constraints_and_malformed_roots_are_validated(self):
+        tokens_path = ".opencode/skills/frontend/ui-system-architect/assets/tokens.json"
+        schema_path = ".opencode/skills/frontend/ui-system-architect/assets/tokens.schema.json"
+        tokens = validator.load_json(self.fixture / tokens_path)
+
+        self.mutate(tokens_path, "[]", "roots must be objects")
+        self.mutate(schema_path, "[]", "roots must be objects")
+
+        tokens["meta"]["unexpected"] = True
+        self.mutate(tokens_path, json.dumps(tokens), "additional property is not allowed")
+        del tokens["meta"]["unexpected"]
+
+        tokens["meta"]["profile"] = "website"
+        self.mutate(tokens_path, json.dumps(tokens), "must equal 'backoffice'")
+        tokens["meta"]["profile"] = "backoffice"
+
+        tokens["meta"]["version"] = "v1"
+        self.mutate(tokens_path, json.dumps(tokens), "required pattern")
+        tokens["meta"]["version"] = "1.0.0"
+
+        tokens["meta"]["baseUnit"] = 0
+        self.mutate(tokens_path, json.dumps(tokens), "below minimum")
+
+        self.remove(tokens_path, "ui-system-architect assets")
+        self.remove(schema_path, "ui-system-architect assets")
+
+    def test_ui_system_malformed_and_cyclic_schema_rules_are_reported(self):
+        schema_path = ".opencode/skills/frontend/ui-system-architect/assets/tokens.schema.json"
+        schema = validator.load_json(self.fixture / schema_path)
+
+        schema["required"] = "meta"
+        self.mutate(schema_path, json.dumps(schema), "required must be a string list")
+
+        schema = validator.load_json(self.fixture / schema_path)
+        schema["$defs"]["cycle"] = {"$ref": "#/$defs/cycle"}
+        schema["properties"]["meta"] = {"$ref": "#/$defs/cycle"}
+        self.mutate(schema_path, json.dumps(schema), "cyclic schema reference")
+
+        schema = validator.load_json(self.fixture / schema_path)
+        schema["properties"]["meta"]["type"] = {}
+        self.mutate(schema_path, json.dumps(schema), "invalid type")
 
     def test_qa_contract_persists_valuable_manual_cases(self):
         base = self.fixture / ".opencode/skills/hierarchical-software-delivery/references"
