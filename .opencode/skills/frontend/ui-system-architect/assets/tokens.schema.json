@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://metro-agents.local/ui-system-architect/tokens.schema.json",
+  "title": "Metro UI fallback tokens",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "meta", "color", "spacing", "radius", "typography", "icon", "control", "elevation", "motion", "layer", "component", "composition", "layout", "grid", "breakpoint"],
+  "properties": {
+    "$schema": {"const": "./tokens.schema.json"},
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "profile", "baseUnit"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "profile": {"const": "backoffice"},
+        "baseUnit": {"type": "integer", "minimum": 1}
+      }
+    },
+    "color": {"$ref": "#/$defs/object"},
+    "spacing": {"$ref": "#/$defs/object"},
+    "radius": {"$ref": "#/$defs/object"},
+    "typography": {"$ref": "#/$defs/object"},
+    "icon": {"$ref": "#/$defs/object"},
+    "control": {"$ref": "#/$defs/object"},
+    "elevation": {"$ref": "#/$defs/object"},
+    "motion": {"$ref": "#/$defs/object"},
+    "layer": {"$ref": "#/$defs/object"},
+    "component": {"$ref": "#/$defs/object"},
+    "composition": {"$ref": "#/$defs/object"},
+    "layout": {"$ref": "#/$defs/object"},
+    "grid": {"$ref": "#/$defs/object"},
+    "breakpoint": {"$ref": "#/$defs/object"}
+  },
+  "$defs": {
+    "object": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "anyOf": [
+          {"type": ["string", "number", "integer"]},
+          {"$ref": "#/$defs/object"}
+        ]
+      }
+    }
+  }
+}

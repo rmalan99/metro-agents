@@ -15,11 +15,16 @@ Use existing documentation instead if it already owns these decisions. Replace p
 - Data access and validation: <paths and rules>
 
 ## Shared visual system
+- Product surface, platform, composition and density: <observed/selected>
+- Visual profile and version: <profile or existing system>
+- Adoption mode: <preserve/adopt>
 - Theme/token source: <actual path>
+- Profile-to-project token mappings: <semantic role to native token/API>
 - Semantic tokens and modes: <names/roles>
 - Component defaults/variants: <actual paths>
 - Density, spacing and responsive conventions: <decisions>
 - How to add a shared style: <native mechanism and owner>
+- Visual exceptions and missing extensions: <bounded gaps, owners and scope>
 
 ## Behavior
 - State ownership and URL conventions: <rules>

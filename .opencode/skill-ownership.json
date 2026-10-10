@@ -6,6 +6,7 @@
     "delivery.logging": ".opencode/logs/error-log.md",
     "frontend.routing": ".opencode/skills/frontend/frontend-developer/SKILL.md",
     "frontend.discovery": ".opencode/skills/frontend/frontend-developer/references/project-discovery.md",
+    "frontend.ui-architecture": ".opencode/skills/frontend/ui-system-architect/SKILL.md",
     "frontend.visual": ".opencode/skills/frontend/frontend-developer/references/design-system.md",
     "frontend.components": ".opencode/skills/frontend/frontend-developer/references/component-contracts.md",
     "frontend.feedback": ".opencode/skills/frontend/frontend-developer/references/feedback.md",
