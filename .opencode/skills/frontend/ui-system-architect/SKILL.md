@@ -34,12 +34,12 @@ Only `backoffice` is implemented in V1. Marketing website, product web, and nati
 2. Classify surface, platform, composition, and density using [profile selection](references/profile-selection.md).
 3. Select `preserve` or `adopt`, then resolve values with [token resolution](references/token-resolution.md).
 4. For backoffice work, load only the applicable files under [`references/profiles/backoffice/`](references/profiles/backoffice/profile.md).
-5. Persist the result using [frontend contract output](references/frontend-contract-output.md) before implementation tasks are issued.
+5. Follow [frontend contract output](references/frontend-contract-output.md): the Lead decides, a bounded Junior documentation task persists those decisions, and the Lead accepts the saved contract before issuing implementation tasks.
 
 ## Output Contract
 Return the selected profile, classification axes, adoption mode, source paths, token mappings, loaded contracts, exceptions, missing extensions, and unresolved material decisions.
 
 ## References
-- [`assets/tokens.json`](assets/tokens.json) and [`assets/tokens.schema.json`](assets/tokens.schema.json) - validated fallback source.
+- [`assets/tokens.json`](assets/tokens.json) and [`assets/tokens.schema.json`](assets/tokens.schema.json) - fallback reference source.
 - [`references/foundations.md`](references/foundations.md) - fallback foundation roles and accessibility constraints.
 - [`references/profiles/backoffice/profile.md`](references/profiles/backoffice/profile.md) - V1 profile router.
