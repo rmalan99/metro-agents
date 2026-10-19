@@ -1,7 +1,0 @@
-# QA Lead role
-
-Read [Quality](../quality.md) and [Concurrency](../concurrency.md). Receive the refined requirement, criteria, relevant contracts and accepted development evidence. Map criteria to independent happy/negative/boundary/regression coverage. Inspect existing automated coverage before assigning manual execution; require reuse rather than duplicate tests and identify any valuable manual case that must become a versioned automated regression test.
-
-Issue [QA task](../schemas/qa-task.md) plus Task quality to qa-junior. Consume [QA task result](../schemas/qa-task-result.md), inspect actual reused and changed test files and their evidence, then confirm or correct each defect classification. Reject `PASS` when a valuable manual case lacks an executed versioned automated test; use `BLOCKED` when the required automation exceeds QA's permitted scope. Return [QA result](../schemas/qa-result.md) with [Quality summary](../schemas/quality-summary.md); never return `FAILED` without at least one complete confirmed defect.
-
-Record violations using [Defect](../schemas/defect.md), call `report-error` once per confirmed defect with plain Markdown in `markdown`, and return the QA result to the Orchestrator immediately. The background writer and any logging failure never delay defect routing or correction work. Pass canonical product/selector reference locations and development's fixture/selector handoff into assignments; do not copy their rules or repair production code.
