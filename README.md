@@ -41,11 +41,26 @@ curl -fsSL https://raw.githubusercontent.com/rmalan99/metro-agents/main/install.
 Todo archivo dentro de `template/` se copia en la raíz del repositorio destino. La estructura inicial instala:
 
 ```text
+AGENTS.md
+.atl/
+└── skill-registry.md
 .opencode/
+└── skills/
+    ├── governance/
+    ├── frontend/
+    ├── react/
+    ├── data/
+    ├── backend/
+    ├── qa/
+    └── delivery/
 opencode.jsonc
 ```
 
-Para publicar nuevos componentes, agrégalos bajo `template/.opencode/` manteniendo la ruta que deberán tener en los repositorios destino.
+Las skills administradas viven en grupos funcionales bajo `template/.opencode/skills/`. Las carpetas de grupo facilitan la revisión, pero el ID de cada skill sigue siendo el nombre de la carpeta que contiene su `SKILL.md`. Para publicar nuevos componentes, agrégalos bajo `template/.opencode/` manteniendo la ruta que deberán tener en los repositorios destino.
+
+Los arquetipos frontend canónicos incluyen `backoffice-application-patterns` para plataformas administrativas y `landing-page-patterns` para páginas públicas de comunicación o conversión. Cada uno carga referencias progresivamente según la pantalla y reutiliza la librería UI detectada en el proyecto.
+
+Toda UI nueva incorpora test IDs estables en pantallas, secciones y componentes relevantes. La validación funcional y visual usa la capacidad global `~/.agents/skills/playwright-cli/SKILL.md`; crear archivos de prueba requiere una solicitud explícita.
 
 ## Restaurar un respaldo
 
