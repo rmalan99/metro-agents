@@ -229,32 +229,62 @@ export default Plugin.define({
     })
 
     const listedModels = await ctx.model.list()
-    const models = Array.isArray(listedModels) ? listedModels : []
+    const models = Array.isArray(listedModels)
+      ? listedModels
+      : Array.isArray((listedModels as any)?.data)
+        ? (listedModels as any).data
+        : []
     type ModelResolution = {
       ref?: { providerID: string; id: string; variant?: string }
       receipt: string
       unresolved?: boolean
+      reasons: string[]
     }
     const resolveModel = (profileName: string, excluded?: string, visited = new Set<string>()): ModelResolution => {
       if (visited.has(profileName)) throw new Error(`Model routing cycle: ${[...visited, profileName].join(" -> ")}`)
       visited.add(profileName)
       const profile = routing.profiles[profileName]
-      if (!profile) return { receipt: "inherit", unresolved: true }
+      if (!profile) return { receipt: "error", unresolved: true, reasons: [`profile ${profileName} is not configured`] }
+      const reasons: string[] = []
       for (const candidate of profile.candidates ?? []) {
-        if (candidate === excluded) continue
+        if (candidate === excluded) {
+          reasons.push(`${candidate}: excluded to keep Validator independent`)
+          continue
+        }
         const ref = parseModelRef(candidate)
-        if (!ref) continue
+        if (!ref) {
+          reasons.push(`${candidate}: invalid provider/model reference`)
+          continue
+        }
         const model = models.find((item: any) => item.providerID === ref.providerID && (item.modelID === ref.id || item.id === ref.id) && item.enabled !== false)
-        if (!model || model.status === "deprecated") continue
-        if (ref.variant && !model.variants?.some((variant: any) => variant.id === ref.variant)) continue
+        if (!model) {
+          reasons.push(`${candidate}: model is unavailable or disabled`)
+          continue
+        }
+        if (model.status === "deprecated") {
+          reasons.push(`${candidate}: model is deprecated`)
+          continue
+        }
+        const variants = Array.isArray(model.variants) ? model.variants : []
+        if (ref.variant && !variants.some((variant: any) => (typeof variant === "string" ? variant : variant.id) === ref.variant)) {
+          reasons.push(`${candidate}: variant ${ref.variant} is unavailable`)
+          continue
+        }
         const required = profile.requiredCapabilities ?? []
-        if (required.includes("tools") && !model.capabilities?.tools) continue
-        if (required.includes("vision") && !model.capabilities?.input?.includes("image")) continue
-        return { ref, receipt: candidate }
+        if (required.includes("tools") && !model.capabilities?.tools) {
+          reasons.push(`${candidate}: tools capability is unavailable`)
+          continue
+        }
+        if (required.includes("vision") && !model.capabilities?.input?.includes("image")) {
+          reasons.push(`${candidate}: vision capability is unavailable`)
+          continue
+        }
+        return { ref, receipt: candidate, reasons }
       }
-      if (profile.fallback === "inherit") return { receipt: "inherit" }
-      if (!profile.fallback) return { receipt: "inherit", unresolved: true }
-      return resolveModel(profile.fallback, excluded, visited)
+      if (profile.fallback === "inherit") return { receipt: "inherit", reasons }
+      if (!profile.fallback || profile.fallback === "error") return { receipt: "error", unresolved: true, reasons }
+      const fallback = resolveModel(profile.fallback, excluded, visited)
+      return { ...fallback, reasons: [...reasons, ...fallback.reasons] }
     }
 
     await ctx.agent.transform((editor) => {
@@ -397,8 +427,9 @@ export default Plugin.define({
           const route = routing.profiles[input.profile]
           const excluded = route?.preferDifferentFromExecutor ? state.executorModels[input.task] : undefined
           const resolved = resolveModel(input.profile, excluded)
-          if (routing.strict && resolved.unresolved) {
-            throw new Error(`No available model for profile ${input.profile}.`)
+          if (resolved.unresolved) {
+            const detail = resolved.reasons.length ? ` ${resolved.reasons.join("; ")}.` : ""
+            throw new Error(`No configured model is available for profile ${input.profile}.${detail}`)
           }
           const created = await ctx.session.create({
             parentID: context.sessionID,

@@ -53,3 +53,12 @@
   - Validación: Bundle TypeScript, diff y casos dirigidos de routing/estado.
   - Responsable: Agente primario
   - Evidencia: Manager y Executor con lease resolvieron la misma tarea activa; una sesión ajena quedó bloqueada; OpenCode cargó Manager/Planner; bundle TypeScript y `git diff --check` pasaron. La migración reclama tareas sin propietario solo desde una sesión aprobada y los leases terminales se reconcilian según outcome.
+
+- [x] **TRV-007 — Hacer autoritativo el routing configurado**
+  - Estado: completada
+  - Ámbito: Web
+  - Alcance: Usar únicamente candidatos y fallbacks declarados, sin heredar silenciosamente otro proveedor.
+  - Criterios de aceptación: `fallback: error` bloquea si ningún candidato funciona; `inherit` y perfiles alternos solo se usan cuando están explícitos; el error explica cada descarte.
+  - Validación: Bundle TypeScript, configuración JSON y casos dirigidos de candidato, variante, herencia y error.
+  - Responsable: Agente primario
+  - Evidencia: OpenCode V2 expuso los candidatos OpenAI configurados con variantes y tools; el resolver acepta respuestas planas o `{data}`, valida strings/objetos de variante y bloquea con `fallback: error`. Bundle TypeScript, JSON y `git diff --check` pasaron.

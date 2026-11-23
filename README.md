@@ -68,7 +68,7 @@ La extensión configurable `.opencode/extensions/governance-gate` exige una tare
 
 El modo se controla en `opencode.jsonc` mediante `plugins[].options.orchestration.enabled`. `default_agent` permanece en `build` como fallback seguro: con `true`, una extensión cargada correctamente promueve `manager` y registra el flujo completo; con `false`, selecciona `directAgent` (por defecto `build`) y no registra gates, RPC ni UI de orquestación. Los perfiles orquestados permanecen instalados pero inactivos, mientras las skills funcionales y `usage-meter` siguen disponibles. OpenCode aplica el cambio al guardar; usa `/reload` solo para forzar una recarga completa.
 
-El agente primario `manager` espera aprobación explícita y coordina `planner`, tres perfiles de `executor` y validadores independientes. `.opencode/model-routing.json` acepta candidatos `provider/model#variant` ordenados por rol; el gate elige el primero disponible, registra el modelo real y usa `inherit` como fallback portable.
+El agente primario `manager` espera aprobación explícita y coordina `planner`, tres perfiles de `executor` y validadores independientes. `.opencode/model-routing.json` acepta candidatos `provider/model#variant` ordenados por rol; el gate usa únicamente candidatos y fallbacks declarados. La distribución usa `fallback: "error"` para impedir cambios silenciosos de modelo o proveedor; `inherit` queda disponible solo como opción explícita.
 
 El Planner trabaja en dos pasadas: `delivery-map` registra unidades verificables y `work-unit-detail` detalla actividades atómicas justo antes de ejecutar cada unidad. `todo.md` no se llena con pasos técnicos que no puedan aceptarse de forma independiente.
 

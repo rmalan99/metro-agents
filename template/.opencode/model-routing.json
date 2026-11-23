@@ -3,38 +3,38 @@
   "profiles": {
     "manager": {
       "candidates": ["openai/gpt-5.6-sol#low"],
-      "fallback": "inherit",
+      "fallback": "error",
       "requiredCapabilities": ["tools"]
     },
     "planner": {
       "candidates": ["openai/gpt-5.6-sol#low"],
-      "fallback": "manager",
+      "fallback": "error",
       "requiredCapabilities": ["tools"]
     },
     "executor-fast": {
       "candidates": ["openai/gpt-5.6-luna#low"],
-      "fallback": "inherit",
+      "fallback": "error",
       "requiredCapabilities": ["tools"]
     },
     "executor-standard": {
       "candidates": ["openai/gpt-5.6-luna#low"],
-      "fallback": "executor-fast",
+      "fallback": "error",
       "requiredCapabilities": ["tools"]
     },
     "executor-deep": {
       "candidates": ["openai/gpt-5.6-sol#medium", "openai/gpt-5.6-sol#low"],
-      "fallback": "executor-standard",
+      "fallback": "error",
       "requiredCapabilities": ["tools"]
     },
     "validator": {
-      "candidates": ["openai/gpt-5.6-sol#low"],
-      "fallback": "manager",
+      "candidates": ["openai/gpt-5.6-sol#low", "openai/gpt-5.6-luna#low"],
+      "fallback": "error",
       "requiredCapabilities": ["tools"],
       "preferDifferentFromExecutor": true
     },
     "visual-validator": {
-      "candidates": ["openai/gpt-5.6-sol#low", "openai/gpt-5.6-sol#medium"],
-      "fallback": "validator",
+      "candidates": ["openai/gpt-5.6-sol#low", "openai/gpt-5.6-sol#medium", "openai/gpt-5.6-luna#low"],
+      "fallback": "error",
       "requiredCapabilities": ["tools", "vision"],
       "preferDifferentFromExecutor": true
     }
