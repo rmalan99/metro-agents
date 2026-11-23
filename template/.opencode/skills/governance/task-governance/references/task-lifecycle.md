@@ -19,6 +19,7 @@ Cada fase declara propósito, resultado comprobable y criterios de término. No 
 - No mezcles cambios Web/API en una microtarea. Si una funcionalidad afecta ambos, crea tareas independientes con dependencias explícitas y conserva separadas estructura, convenciones y responsabilidades.
 - Divide cada funcionalidad en microtareas independientes, pequeñas, comprensibles y verificables.
 - Da a cada microtarea un único resultado observable, dependencias y orden explícitos. No la cierres sin implementar y verificar ese resultado.
+- Usa como límite la unidad mínima aceptable y verificable, no la acción técnica mínima. Mantén sus actividades atómicas en la orden de ejecución para evitar sobrefragmentación.
 
 ## Registro y estados
 
@@ -26,9 +27,21 @@ Registra toda tarea y microtarea acordada en `todo.md` antes de implementarla. C
 
 Si afecta un componente Web global, incluye actualizar el catálogo. Si elimina API, archivo o componente, incluye migración y verificación de todos sus consumidores.
 
-Usa identificadores `WEB-###`, `API-###` o `TRV-###`:
+Usa identificadores `WEB-###`, `API-###` o `TRV-###` y el ciclo:
+
+```text
+pendiente → preparada → ejecutando → bloqueada | verificando → completada
+```
+
+- `preparada`: contrato completo y dependencias validadas.
+- `ejecutando`: habilita mutaciones dentro del alcance reservado.
+- `bloqueada`: detiene mutaciones hasta resolver y volver a `preparada`/`ejecutando`.
+- `verificando`: implementación detenida salvo corrección autorizada; el orquestador contrasta evidencia.
+- `completada`: aceptación y validaciones verificadas, checkbox `[x]`.
+
+Representación:
 
 - `[ ]`: pendiente, bloqueada o en ejecución.
 - `[x]`: completada y verificada por el orquestador.
 
-Una bloqueada permanece `[ ]` y documenta causa concreta y evidencia: error, comando o dependencia pendiente. Solo el orquestador modifica el registro, verifica evidencia y marca tareas; los subagentes nunca modifican `todo.md`.
+Una bloqueada permanece `[ ]` y documenta causa concreta y evidencia: error, comando o dependencia pendiente. Solo el agente primario responsable modifica el registro, verifica evidencia y marca tareas; los subagentes nunca modifican `todo.md`.

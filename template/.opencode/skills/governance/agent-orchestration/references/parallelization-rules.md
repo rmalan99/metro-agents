@@ -2,8 +2,9 @@
 
 ## Límites
 
-- No excedas cuatro subagentes simultáneos.
-- Cuando el trabajo lo permita, limita el plan por defecto a dos subagentes.
+- No excedas dos subagentes simultáneos ni el límite menor configurado.
+- Cada subagente activo requiere un lease único creado por `governance_agent_launch` y liberado al terminar o interrumpirse.
+- Planner, Executors y Validators cuentan en el mismo límite; el Manager no cuenta.
 - Paraleliza únicamente tareas independientes. Si no puedes demostrar independencia, ejecuta en secuencia.
 
 ## Prueba de independencia

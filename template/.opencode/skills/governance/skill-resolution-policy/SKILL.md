@@ -17,8 +17,10 @@ metadata:
 - Prioriza: nombre o ruta exactos, artefacto solicitado, archivos afectados, tecnología demostrada, intención y términos genéricos. No actives solo por `Web`, `API`, idioma o extensión.
 - Descarta entradas `legacy`, shim, deprecadas o no normativas salvo nombre/ruta exactos o migración heredada; sigue entonces su redirección canónica.
 - Distingue pregunta, planificación, implementación, revisión y destrucción. Una pregunta informativa no activa `task-governance`; una decisión ya especificada no activa `implementation-decision-policy`.
+- Toda planificación o implementación activa `task-governance`. La delegación activa además `agent-orchestration` solo cuando `plugins[].options.orchestration.enabled` no sea `false`; en modo directo el agente primario conserva la responsabilidad completa y no simula herramientas ni roles del orquestador. No permitas herramientas mutantes antes de registrar y activar una tarea cuando el gate esté disponible.
 - Resuelve dependencias obligatorias hasta punto fijo. Bloquea ciclos y rutas ausentes; no promociones referencias opcionales.
 - Con delegación entrega a `agent-orchestration` un recibo con alcance, rutas exactas, dependencias, bloqueos y condiciones de reevaluación. Sin delegación aplica directamente la selección.
+- Protege el contexto: consulta primero índices o búsquedas dirigidas, lee solo el rango necesario y filtra logs, diffs, catálogos, schemas y respuestas API antes de incorporarlos. No cargues documentos completos para localizar un campo y no repitas una validación aprobada salvo evidencia contradictoria.
 
 ## Execution
 

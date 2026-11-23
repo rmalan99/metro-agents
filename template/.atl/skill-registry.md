@@ -16,6 +16,7 @@
 | backoffice-application-patterns | backoffice; panel administrativo; admin dashboard; pantalla administrativa | `.opencode/skills/frontend/backoffice-application-patterns/SKILL.md` | normativa |
 | landing-page-patterns | landing page; marketing; conversión; hero; pricing; CTA comercial | `.opencode/skills/frontend/landing-page-patterns/SKILL.md` | normativa |
 | frontend-ui-quality | UI; UX; accesibilidad; responsive; estados visuales | `.opencode/skills/frontend/frontend-ui-quality/SKILL.md` | normativa |
+| frontend-loading-performance | lazy loading; carga diferida; code splitting; bundle; chunk; assets bajo demanda | `.opencode/skills/frontend/frontend-loading-performance/SKILL.md` | normativa |
 | react-behavior-implementation | componente; hook; comportamiento React | `.opencode/skills/react/react-behavior-implementation/SKILL.md` | normativa |
 | react-hook-form-composition | React Hook Form; RHF; FormProvider; useController | `.opencode/skills/react/react-hook-form-composition/SKILL.md` | normativa |
 | promise-modal-composition | promise modal; confirm dialog | `.opencode/skills/frontend/promise-modal-composition/SKILL.md` | normativa |
@@ -35,3 +36,4 @@
 | playwright-cli global | validación funcional/visual o automatización real de navegador | `~/.agents/skills/playwright-cli/SKILL.md` |
 | supabase global | productos o herramientas Supabase | `~/.agents/skills/supabase/SKILL.md` |
 | supabase-postgres-best-practices | SQL; esquema; RLS; RPC; índices; acceso DB | `~/.agents/skills/supabase-postgres-best-practices/SKILL.md` |
+| vercel-react-best-practices | rendimiento React/Next; bundle; carga diferida | `~/.agents/skills/vercel-react-best-practices/SKILL.md` |

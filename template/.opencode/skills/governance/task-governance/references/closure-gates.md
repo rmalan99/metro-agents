@@ -2,7 +2,7 @@
 
 ## Verificación
 
-Solo el orquestador verifica y marca tareas. Para cerrar una tarea:
+Solo el agente primario responsable verifica y marca tareas: el Manager en modo orquestado o el agente directo cuando la orquestación está desactivada. Para cerrar una tarea:
 
 1. Confirma que el resultado observable está implementado.
 2. Ejecuta las pruebas, comandos y comportamientos declarados en `Validación`.

@@ -2,6 +2,7 @@
 
 ```md
 - [ ] **WEB-001 — Resultado observable**
+  - Estado: preparada
   - Ámbito: Web
   - Objetivo: qué debe quedar funcionando.
   - Alcance: módulos/archivos permitidos.

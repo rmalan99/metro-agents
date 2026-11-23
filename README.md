@@ -62,6 +62,22 @@ Los arquetipos frontend canónicos incluyen `backoffice-application-patterns` pa
 
 Toda UI nueva incorpora test IDs estables en pantallas, secciones y componentes relevantes. La validación funcional y visual usa la capacidad global `~/.agents/skills/playwright-cli/SKILL.md`; crear archivos de prueba requiere una solicitud explícita.
 
+La capacidad `frontend-loading-performance` gobierna lazy loading de rutas, módulos, assets y datos. Solo difiere trabajo con beneficio demostrado y conserva contenido crítico, fallback, recuperación, accesibilidad y estabilidad visual.
+
+La extensión configurable `.opencode/extensions/governance-gate` exige una tarea `ejecutando` antes de habilitar herramientas mutantes. Vive fuera de `.opencode/plugins/` para evitar la carga automática duplicada y se activa explícitamente desde `opencode.jsonc`. La configuración `.opencode/governance.json` limita a dos subagentes concurrentes; cada lanzamiento requiere un lease que el orquestador libera al terminar o interrumpir.
+
+El modo se controla en `opencode.jsonc` mediante `plugins[].options.orchestration.enabled`. `default_agent` permanece en `build` como fallback seguro: con `true`, una extensión cargada correctamente promueve `manager` y registra el flujo completo; con `false`, selecciona `directAgent` (por defecto `build`) y no registra gates, RPC ni UI de orquestación. Los perfiles orquestados permanecen instalados pero inactivos, mientras las skills funcionales y `usage-meter` siguen disponibles. OpenCode aplica el cambio al guardar; usa `/reload` solo para forzar una recarga completa.
+
+El agente primario `manager` espera aprobación explícita y coordina `planner`, tres perfiles de `executor` y validadores independientes. `.opencode/model-routing.json` acepta candidatos `provider/model#variant` ordenados por rol; el gate elige el primero disponible, registra el modelo real y usa `inherit` como fallback portable.
+
+El Planner trabaja en dos pasadas: `delivery-map` registra unidades verificables y `work-unit-detail` detalla actividades atómicas justo antes de ejecutar cada unidad. `todo.md` no se llena con pasos técnicos que no puedan aceptarse de forma independiente.
+
+El mismo plugin incluye una extensión TUI multi-subagente. El sidebar y el footer muestran la fase actual y las plazas ocupadas; `/delivery` abre tareas, agentes, modelos, leases y relaciones Executor→Validator, y `/delivery-refresh` vuelve a leer el estado. El panel muestra actividades verificadas y estados reales, no porcentajes estimados.
+
+El plugin local `usage-meter` agrega el consumo real almacenado por OpenCode para toda la familia de sesiones. `/usage` muestra tokens de entrada, salida, razonamiento y caché, coste por agente/modelo/tarea, coste por unidad validada y alertas de consumo. Desde el panel, `j` exporta JSON y `c` exporta CSV bajo `.opencode/usage/`; ningún dato se envía a servicios externos.
+
+La configuración limita cada resultado de herramienta a 300 líneas o 20 KB y conserva 8.000 tokens recientes durante la compactación automática. Los agentes usan presupuestos de pasos según riesgo, filtran logs y respuestas antes de reportarlos y no repiten una validación aprobada sin evidencia contradictoria. Estos límites reducen contexto enviado al modelo; no representan ni pueden consultar el balance diario del proveedor.
+
 ## Restaurar un respaldo
 
 Copia el contenido del respaldo elegido sobre la raíz del repositorio:

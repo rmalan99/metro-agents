@@ -20,6 +20,7 @@ Activa esta skill al crear o revisar un backoffice o una pantalla administrativa
 - La skill define semántica y composición, no APIs de MUI, shadcn, Tailwind, React ni un router. Resuelve capacidades tecnológicas solo cuando dependencias o archivos las demuestren.
 - No inventes módulos, métricas, rutas de negocio, permisos, datos, acciones ni integraciones. Los defaults completan estructura ausente, no requisitos de dominio.
 - Implementa carga, vacío, error, permisos y responsive aplicables. Para operaciones remotas carga `../../data/remote-data-behavior/SKILL.md`; para React carga `../../react/react-behavior-implementation/SKILL.md`.
+- Para rutas, módulos administrativos o integraciones pesadas bajo demanda, carga `../frontend-loading-performance/SKILL.md`; no difieras shell, navegación ni la primera tarea útil.
 
 ## Decision Gates
 

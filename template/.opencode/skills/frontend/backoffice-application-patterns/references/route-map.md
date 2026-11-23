@@ -18,3 +18,4 @@ Define equivalentes para estos roles; conserva convenciones y prefijos existente
 - Protege rutas privadas y acciones por capacidades reales; ocultar un enlace no reemplaza autorización.
 - Sidebar y breadcrumbs enlazan rutas existentes. Mantén retorno, deep links, refresh y parámetros de listado.
 - Una ruta desconocida no debe redirigir silenciosamente a una pantalla privilegiada.
+- Rutas de módulos pesados pueden dividirse bajo demanda con fallback y recuperación; shell, control de acceso y destino inicial permanecen disponibles.

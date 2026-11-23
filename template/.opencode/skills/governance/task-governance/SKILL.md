@@ -5,7 +5,7 @@ license: Apache-2.0
 metadata:
   opencode/autoinvoke: false
   author: 'mouseinyl'
-  version: '1.0'
+  version: '1.2'
 ---
 
 ## Activation Contract
@@ -17,8 +17,10 @@ Activa esta skill al planificar, registrar, ejecutar, bloquear, verificar o cerr
 - Evalúa y presenta el plan antes de implementar. Divide funcionalidades en microtareas independientes, pequeñas, comprensibles y verificables.
 - Declara `Web`, `API` o `Web/API` en cada plan, fase y tarea; usa `Web/API` solo cuando sea inevitable. Nunca mezcles cambios Web/API en una microtarea: sepáralos y explicita dependencias.
 - Registra en `todo.md` toda tarea acordada antes de implementarla con `WEB-###`, `API-###` o `TRV-###` y el contrato de la plantilla.
+- Con orquestación activa, ninguna herramienta mutante se usa hasta que la tarea esté registrada y en estado `ejecutando`; usa `governance_task_register` y `governance_task_status` y no evadas el gate mediante shell. En modo directo, el agente primario registra y mantiene el estado con las herramientas de edición disponibles antes de implementar.
 - Mantén cada tarea independiente y no ambigua; no mezcles implementación con refactorización, documentación ni correcciones ajenas.
-- Solo el orquestador modifica `todo.md`, verifica evidencia y marca `[x]`. Los subagentes nunca lo modifican.
+- Registra en `todo.md` unidades de trabajo verificables, no cada actividad técnica. Las actividades atómicas viven en la orden del Executor y se promueven a tarea solo si pueden aceptarse independientemente.
+- Solo el agente primario responsable modifica `todo.md`, verifica evidencia y marca `[x]`: es el Manager con orquestación activa y el agente directo cuando está desactivada. Los subagentes nunca lo modifican.
 - Marca `[x]` inmediatamente después de implementar, verificar y cumplir la aceptación; escribir código no basta. Conserva completadas durante el flujo; solo el usuario puede eliminarlas al final.
 - No inicies una fase dependiente hasta validar su requisito previo. La asignación o delegación de responsables queda fuera de esta skill y debe regirse por su contrato específico cuando exista.
 
@@ -27,11 +29,11 @@ Activa esta skill al planificar, registrar, ejecutar, bloquear, verificar o cerr
 | Modo       | Acción obligatoria                                |
 | ---------- | ------------------------------------------------- |
 | Planificar | Evalúa contexto y diseña fases verificables       |
-| Registrar  | Crea entradas completas antes de implementar      |
-| Ejecutar   | Respeta alcance, orden y dependencias             |
+| Registrar  | Crea entrada `preparada` antes de implementar     |
+| Ejecutar   | Mueve a `ejecutando`; respeta alcance y dependencias |
 | Bloquear   | Conserva `[ ]` y registra causa y evidencia       |
-| Verificar  | Contrasta aceptación y validaciones con evidencia |
-| Cerrar     | Marca `[x]`, conserva la entrada y no la elimines |
+| Verificar  | Mueve a `verificando` y contrasta evidencia       |
+| Cerrar     | Mueve a `completada`, marca `[x]` y conserva      |
 
 ## Execution Steps
 
@@ -44,7 +46,7 @@ Activa esta skill al planificar, registrar, ejecutar, bloquear, verificar o cerr
 
 ## Output Contract
 
-Devuelve modo, ámbito, fases, tareas con identificadores, dependencias, estado, evidencia y validaciones. Declara bloqueos y criterios pendientes. Confirma que solo el orquestador modificó `todo.md` y que ninguna completada fue eliminada sin autorización final del usuario.
+Devuelve modo de ejecución, ámbito, fases, tareas con identificadores, dependencias, estado, evidencia y validaciones. Declara bloqueos y criterios pendientes. Confirma que solo el agente primario responsable modificó `todo.md` y que ninguna completada fue eliminada sin autorización final del usuario.
 
 ## References
 

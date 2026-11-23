@@ -1,0 +1,42 @@
+{
+  "strict": true,
+  "profiles": {
+    "manager": {
+      "candidates": ["openai/gpt-5.6-sol#low"],
+      "fallback": "inherit",
+      "requiredCapabilities": ["tools"]
+    },
+    "planner": {
+      "candidates": ["openai/gpt-5.6-sol#low"],
+      "fallback": "manager",
+      "requiredCapabilities": ["tools"]
+    },
+    "executor-fast": {
+      "candidates": ["openai/gpt-5.6-luna#low"],
+      "fallback": "inherit",
+      "requiredCapabilities": ["tools"]
+    },
+    "executor-standard": {
+      "candidates": ["openai/gpt-5.6-luna#low"],
+      "fallback": "executor-fast",
+      "requiredCapabilities": ["tools"]
+    },
+    "executor-deep": {
+      "candidates": ["openai/gpt-5.6-sol#medium", "openai/gpt-5.6-sol#low"],
+      "fallback": "executor-standard",
+      "requiredCapabilities": ["tools"]
+    },
+    "validator": {
+      "candidates": ["openai/gpt-5.6-sol#low"],
+      "fallback": "manager",
+      "requiredCapabilities": ["tools"],
+      "preferDifferentFromExecutor": true
+    },
+    "visual-validator": {
+      "candidates": ["openai/gpt-5.6-sol#low", "openai/gpt-5.6-sol#medium"],
+      "fallback": "validator",
+      "requiredCapabilities": ["tools", "vision"],
+      "preferDifferentFromExecutor": true
+    }
+  }
+}

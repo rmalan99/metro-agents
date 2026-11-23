@@ -23,6 +23,7 @@ Deriva verificaciones de las skills funcionales ya activadas. La capacidad globa
 - Un componente compartido no cierra sin catálogo e instrumentación de testabilidad; pruebas nuevas requieren solicitud explícita. Una API eliminada no cierra mientras existan consumidores.
 - Todo cambio UI renderizable exige recorrido funcional y revisión visual contra la tarea mediante Playwright cuando servidor, datos y credenciales estén disponibles. Comprueba viewport aplicable, estados, consola y requests relevantes; captura evidencia cuando aporte valor.
 - Si falta entorno ejecutable, reporta el bloqueo y la validación no realizada. No sustituyas evidencia visual con una afirmación ni crees snapshots/baselines sin autorización.
+- Cuando `frontend-loading-performance` esté activa, inspecciona requests/chunks, contenido prioritario, fallback, error/reintento, layout shift observable y navegación rápida. No declares mejora sin evidencia.
 - No ocultes fallos ajenos ni los corrijas fuera de alcance: registra comando, salida y relación con el cambio.
 - Reporta únicamente comandos realmente ejecutados y distingue éxito, fallo y validación no disponible.
 
@@ -33,6 +34,7 @@ Deriva verificaciones de las skills funcionales ya activadas. La capacidad globa
 | Iteración          | Prueba/verificación específica, lint/typecheck enfocados y diff check |
 | Componente o flujo | Verificación enfocada, lint y typecheck; tests existentes aplicables  |
 | UI renderizable    | Playwright funcional + revisión visual contra aceptación              |
+| Lazy loading       | Red/chunks + fallback/error + estabilidad visual                       |
 | Tarea o fase       | Batería completa y requisitos de skills activadas                     |
 | Cambio posterior   | Repite las validaciones afectadas                                     |
 

@@ -1,0 +1,7 @@
+{
+  "strict": true,
+  "todoFile": "todo.md",
+  "maxConcurrentSubagents": 2,
+  "requireTaskBeforeWrite": true,
+  "requireAgentLease": true
+}

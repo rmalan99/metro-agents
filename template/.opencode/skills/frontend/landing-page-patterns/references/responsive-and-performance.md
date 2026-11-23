@@ -6,5 +6,6 @@
 - Grids se reducen sin crear carruseles innecesarios. CTA y formularios permanecen utilizables con teclado móvil.
 - Usa HTML semántico, un `h1`, jerarquía de headings, landmarks, links descriptivos y metadatos reales.
 - Optimiza imágenes con dimensiones, formatos y carga apropiados; no cargues video, animación o librerías pesadas sin beneficio demostrado.
+- Prioriza hero, identidad y CTA inicial. Difiere imágenes inferiores, embeds y medios pesados mediante `frontend-loading-performance` cuando exista beneficio real.
 - Reserva espacio para medios, reduce layout shift y respeta `prefers-reduced-motion`.
 - No sacrifiques contenido crítico, contraste o foco por una puntuación visual.

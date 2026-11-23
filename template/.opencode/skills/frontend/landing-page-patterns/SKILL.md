@@ -18,6 +18,7 @@ Activa esta skill para páginas públicas de comunicación o conversión. Carga 
 - Construye una narrativa con un CTA primario consistente; cada sección debe resolver una objeción o apoyar esa acción.
 - Usa identidad, assets, tokens, componentes y librería existentes. No recrees primitives ni mezcles librerías.
 - Prioriza semántica, lectura, rendimiento, SEO técnico y accesibilidad. Decoración y animación nunca bloquean contenido o acción.
+- Carga `../frontend-loading-performance/SKILL.md` cuando existan medios, embeds, secciones inferiores o código pesado diferible. Hero, identidad y CTA inicial permanecen prioritarios.
 - No agregues todas las secciones del catálogo: carga `references/composition.md` y selecciona solo las respaldadas por contenido real.
 
 ## Execution
