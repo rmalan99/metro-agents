@@ -23,6 +23,7 @@ Activa esta skill al planificar, registrar, ejecutar, bloquear, verificar o cerr
 - Solo el agente primario responsable modifica `todo.md`, verifica evidencia y marca `[x]`: es el Manager con orquestación activa y el agente directo cuando está desactivada. Los subagentes nunca lo modifican.
 - Marca `[x]` inmediatamente después de implementar, verificar y cumplir la aceptación; escribir código no basta. Conserva completadas durante el flujo; solo el usuario puede eliminarlas al final.
 - No inicies una fase dependiente hasta validar su requisito previo. La asignación o delegación de responsables queda fuera de esta skill y debe regirse por su contrato específico cuando exista.
+- Respeta las transiciones declaradas por el gate: no saltes fases ni cierres una tarea sin la evidencia y el PASS requeridos.
 
 ## Decision Gates
 

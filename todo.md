@@ -35,3 +35,21 @@
   - Validación: Configuración OpenCode V2, frontmatter de agentes, JSONC, carga de agentes y diff enfocado.
   - Responsable: Agente primario
   - Evidencia: OpenCode V2 cargó límites de 300 líneas/20 KB, compactación con retención de 8.000 tokens y buffer de 20%; los siete perfiles cargaron los nuevos presupuestos de pasos; bundle, Bash y diff pasaron validación.
+
+- [x] **TRV-005 — Corregir fallback heredado de modelos**
+  - Estado: completada
+  - Ámbito: Web
+  - Alcance: Distinguir un fallback explícito y válido a `inherit` de una ruta de modelos realmente irresoluble.
+  - Criterios de aceptación: `planner → manager → inherit` puede lanzar el agente; perfiles o fallbacks ausentes siguen bloqueando cuando `strict` está activo.
+  - Validación: Bundle TypeScript y casos dirigidos de resolución disponibles, heredados e irresolubles.
+  - Responsable: Agente primario
+  - Evidencia: `planner → manager → inherit` resolvió como herencia válida; un modelo disponible conservó su referencia y un fallback ausente quedó marcado como irresoluble. Bundle TypeScript y diff pasaron validación.
+
+- [x] **TRV-006 — Endurecer leases y transiciones del gate**
+  - Estado: completada
+  - Ámbito: Web
+  - Alcance: Vincular mutaciones a la sesión propietaria, recuperar leases obsoletos, validar transiciones y aplicar `requireAgentLease`.
+  - Criterios de aceptación: Una sesión no puede mutar tareas ajenas; leases de sesiones inexistentes se liberan al iniciar; saltos de estado inválidos se rechazan; los subagentes sin lease no reciben herramientas mutantes.
+  - Validación: Bundle TypeScript, diff y casos dirigidos de routing/estado.
+  - Responsable: Agente primario
+  - Evidencia: Manager y Executor con lease resolvieron la misma tarea activa; una sesión ajena quedó bloqueada; OpenCode cargó Manager/Planner; bundle TypeScript y `git diff --check` pasaron. La migración reclama tareas sin propietario solo desde una sesión aprobada y los leases terminales se reconcilian según outcome.

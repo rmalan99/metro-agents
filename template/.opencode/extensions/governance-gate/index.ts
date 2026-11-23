@@ -19,6 +19,7 @@ type OrchestrationOptions = {
 type State = {
   leases: Array<{ agent: string; task: string; scope: string; profile?: string; model?: string; startedAt: string }>
   approvals: Record<string, { brief: string; quote: string; approvedAt: string }>
+  taskSessions: Record<string, string>
   executorModels: Record<string, string>
   executorSessions: Record<string, string>
   validations: Record<string, { verdict: "PASS" | "FAIL" | "BLOCKED"; validator: string; report: string; attempts: number; recordedAt: string }>
@@ -45,7 +46,7 @@ const defaults: Config = {
   requireAgentLease: true,
 }
 
-const emptyState = (): State => ({ leases: [], approvals: {}, executorModels: {}, executorSessions: {}, validations: {}, recentAgents: [] })
+const emptyState = (): State => ({ leases: [], approvals: {}, taskSessions: {}, executorModels: {}, executorSessions: {}, validations: {}, recentAgents: [] })
 
 const uiStatus = (status: string) => ({
   preparada: "prepared",
@@ -116,6 +117,22 @@ function replaceTaskStatus(todoPath: string, task: string, status: string): bool
   return true
 }
 
+function readTaskStatus(todoPath: string, task: string): string | undefined {
+  if (!existsSync(todoPath)) return undefined
+  const source = readFileSync(todoPath, "utf8")
+  const escaped = task.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  const match = source.match(new RegExp(`^- \\[[ x]\\] \\*\\*${escaped}\\b[\\s\\S]*?^\\s+- Estado:\\s*([^\\n]+)`, "m"))
+  return match?.[1]?.trim()
+}
+
+const allowedTransitions: Record<string, string[]> = {
+  preparada: ["preparada", "ejecutando", "bloqueada"],
+  ejecutando: ["ejecutando", "verificando", "bloqueada"],
+  verificando: ["verificando", "ejecutando", "completada", "bloqueada"],
+  bloqueada: ["bloqueada", "preparada"],
+  completada: ["completada"],
+}
+
 export default Plugin.define({
   id: "metro-agents.governance-gate",
   async setup(ctx) {
@@ -142,8 +159,32 @@ export default Plugin.define({
 
     const storedState = (await ctx.storage.get(stateKey)) as State | undefined
     let leaseState: State = storedState && Array.isArray(storedState.leases)
-      ? { ...emptyState(), ...storedState, approvals: storedState.approvals ?? {}, executorModels: storedState.executorModels ?? {}, executorSessions: storedState.executorSessions ?? {}, validations: storedState.validations ?? {}, recentAgents: storedState.recentAgents ?? [] }
+      ? { ...emptyState(), ...storedState, approvals: storedState.approvals ?? {}, taskSessions: storedState.taskSessions ?? {}, executorModels: storedState.executorModels ?? {}, executorSessions: storedState.executorSessions ?? {}, validations: storedState.validations ?? {}, recentAgents: storedState.recentAgents ?? [] }
       : emptyState()
+    const liveLeases = []
+    for (const lease of leaseState.leases) {
+      try {
+        const session: any = await ctx.session.get({ sessionID: lease.agent })
+        const terminal = ["succeeded", "failed", "interrupted"].includes(session.outcome)
+        const pendingValidator = lease.profile?.includes("validator")
+          && !leaseState.validations[lease.task]
+          && readTaskStatus(todoPath, lease.task) === "verificando"
+        if (!terminal || pendingValidator) {
+          liveLeases.push(lease)
+          continue
+        }
+        if (lease.profile?.startsWith("executor") && session.outcome === "succeeded") {
+          leaseState.executorModels[lease.task] = lease.model ?? "inherit"
+          leaseState.executorSessions[lease.task] = lease.agent
+        }
+        leaseState.recentAgents.unshift({ id: lease.agent, task: lease.task, profile: lease.profile ?? "subagent", model: lease.model ?? "inherit", status: session.outcome, finishedAt: new Date().toISOString() })
+      } catch {
+        leaseState.recentAgents.unshift({ id: lease.agent, task: lease.task, profile: lease.profile ?? "subagent", model: lease.model ?? "inherit", status: "recovered-stale-lease", finishedAt: new Date().toISOString() })
+      }
+    }
+    leaseState.leases = liveLeases
+    leaseState.recentAgents = leaseState.recentAgents.slice(0, 10)
+    if (storedState && liveLeases.length !== storedState.leases.length) await ctx.storage.set(stateKey, leaseState)
     let revision = new Date().toISOString()
     let rpcRegistration: any
     const getState = () => leaseState
@@ -169,8 +210,14 @@ export default Plugin.define({
       await ctx.storage.set(stateKey, state)
       await rpcRegistration?.events.emit("updated", { revision, reason })
     }
-    const hasExecutingTask = () =>
-      existsSync(todoPath) && /^\s+- Estado:\s*(ejecutando|verificando)\s*$/m.test(readFileSync(todoPath, "utf8"))
+    const taskForSession = (sessionID: string) =>
+      getState().leases.find((lease) => lease.agent === sessionID)?.task
+      ?? Object.entries(getState().taskSessions).find(([, owner]) => owner === sessionID)?.[0]
+    const hasExecutingTask = (sessionID: string) => {
+      const task = taskForSession(sessionID)
+      const status = task ? readTaskStatus(todoPath, task) : undefined
+      return status === "ejecutando" || status === "verificando"
+    }
 
     rpcRegistration = await ctx.rpc.register(GovernanceRpc, {
       status: async () => deliveryStatus(),
@@ -183,11 +230,16 @@ export default Plugin.define({
 
     const listedModels = await ctx.model.list()
     const models = Array.isArray(listedModels) ? listedModels : []
-    const resolveModel = (profileName: string, excluded?: string, visited = new Set<string>()): { ref?: { providerID: string; id: string; variant?: string }; receipt: string } => {
+    type ModelResolution = {
+      ref?: { providerID: string; id: string; variant?: string }
+      receipt: string
+      unresolved?: boolean
+    }
+    const resolveModel = (profileName: string, excluded?: string, visited = new Set<string>()): ModelResolution => {
       if (visited.has(profileName)) throw new Error(`Model routing cycle: ${[...visited, profileName].join(" -> ")}`)
       visited.add(profileName)
       const profile = routing.profiles[profileName]
-      if (!profile) return { receipt: "inherit" }
+      if (!profile) return { receipt: "inherit", unresolved: true }
       for (const candidate of profile.candidates ?? []) {
         if (candidate === excluded) continue
         const ref = parseModelRef(candidate)
@@ -200,7 +252,8 @@ export default Plugin.define({
         if (required.includes("vision") && !model.capabilities?.input?.includes("image")) continue
         return { ref, receipt: candidate }
       }
-      if (profile.fallback === "inherit" || !profile.fallback) return { receipt: "inherit" }
+      if (profile.fallback === "inherit") return { receipt: "inherit" }
+      if (!profile.fallback) return { receipt: "inherit", unresolved: true }
       return resolveModel(profile.fallback, excluded, visited)
     }
 
@@ -253,10 +306,21 @@ export default Plugin.define({
         options: { codemode: true },
         execute: async (input, context) => {
           if (!getState().approvals[context.sessionID]) throw new Error("No explicit Work Brief approval is recorded for this session.")
+          const state = getState()
           const current = existsSync(todoPath) ? readFileSync(todoPath, "utf8") : "# TODO\n\n"
-          if (current.includes(`**${input.id} `)) return { content: `Task ${input.id} already exists.` }
+          if (current.includes(`**${input.id} `)) {
+            const owner = state.taskSessions[input.id]
+            if (owner && owner !== context.sessionID) throw new Error(`Task ${input.id} is owned by another session.`)
+            if (!owner) {
+              state.taskSessions[input.id] = context.sessionID
+              await setState(state, "task-ownership-migrated")
+            }
+            return { content: `Task ${input.id} already exists and is owned by this session.` }
+          }
           const entry = `- [ ] **${input.id} — ${input.title}**\n  - Estado: preparada\n  - Alcance: ${input.scope}\n  - Criterios de aceptación: ${input.acceptance}\n  - Validación: ${input.validation}\n  - Responsable: Orquestador\n  - Evidencia: pendiente\n\n`
           writeFileSync(todoPath, `${current.trimEnd()}\n\n${entry}`)
+          state.taskSessions[input.id] = context.sessionID
+          await setState(state, "task-registered")
           revision = new Date().toISOString()
           await rpcRegistration.events.emit("updated", { revision, reason: "task-registered" })
           return { content: `Registered ${input.id} as preparada.` }
@@ -276,7 +340,20 @@ export default Plugin.define({
           additionalProperties: false,
         },
         options: { codemode: true },
-        execute: async (input) => {
+        execute: async (input, context) => {
+          const currentStatus = readTaskStatus(todoPath, input.id)
+          if (!currentStatus) throw new Error(`Task ${input.id} was not found.`)
+          const state = getState()
+          const owner = state.taskSessions[input.id]
+          if (owner && owner !== context.sessionID) throw new Error(`Task ${input.id} is owned by another session.`)
+          if (!owner && state.approvals[context.sessionID]) {
+            state.taskSessions[input.id] = context.sessionID
+            await setState(state, "task-ownership-migrated")
+          }
+          if (state.taskSessions[input.id] !== context.sessionID) throw new Error(`Task ${input.id} has no owner for this session.`)
+          if (!allowedTransitions[currentStatus]?.includes(input.status)) {
+            throw new Error(`Invalid task transition: ${currentStatus} -> ${input.status}.`)
+          }
           if (input.status === "completada" && getState().validations[input.id]?.verdict !== "PASS") {
             throw new Error(`Task ${input.id} cannot complete without a recorded Validator PASS.`)
           }
@@ -309,10 +386,18 @@ export default Plugin.define({
           const state = getState()
           if (!state.approvals[context.sessionID]) throw new Error("No explicit Work Brief approval is recorded for this session.")
           if (state.leases.length >= config.maxConcurrentSubagents) throw new Error(`Subagent limit reached (${config.maxConcurrentSubagents}).`)
+          if (input.profile !== "planner") {
+            const status = readTaskStatus(todoPath, input.task)
+            if (!status) throw new Error(`Task ${input.task} was not found.`)
+            if (state.taskSessions[input.task] !== context.sessionID) throw new Error(`Task ${input.task} is owned by another session.`)
+            const validator = input.profile.includes("validator")
+            const expectedStatus = validator ? "verificando" : "ejecutando"
+            if (status !== expectedStatus) throw new Error(`${input.profile} requires task ${input.task} to be ${expectedStatus}; current status is ${status}.`)
+          }
           const route = routing.profiles[input.profile]
           const excluded = route?.preferDifferentFromExecutor ? state.executorModels[input.task] : undefined
           const resolved = resolveModel(input.profile, excluded)
-          if (routing.strict && resolved.receipt === "inherit" && route && route.fallback !== "inherit") {
+          if (routing.strict && resolved.unresolved) {
             throw new Error(`No available model for profile ${input.profile}.`)
           }
           const created = await ctx.session.create({
@@ -416,18 +501,20 @@ export default Plugin.define({
     await ctx.session.hook("context", async (event) => {
       if (!config.strict) return
       const state = getState()
-      const mutationAllowed = !config.requireTaskBeforeWrite || hasExecutingTask()
+      const mutationAllowed = !config.requireTaskBeforeWrite || hasExecutingTask(event.sessionID)
 
       for (const name of Object.keys(event.tools)) {
         const normalized = name.toLowerCase()
-        if (!mutationAllowed && /(write|edit|patch|bash|shell)/.test(normalized) && !normalized.includes("governance")) {
+        const sessionLease = state.leases.find((lease) => lease.agent === event.sessionID)
+        const leaseRequired = config.requireAgentLease && !state.approvals[event.sessionID] && !sessionLease
+        if ((!mutationAllowed || leaseRequired) && /(write|edit|patch|bash|shell)/.test(normalized) && !normalized.includes("governance")) {
           delete event.tools[name]
         }
       }
 
       event.system.push({
         type: "text",
-        text: `Governance gate: todo=${config.todoFile}; mutationAllowed=${mutationAllowed}; activeSubagents=${state.leases.length}/${config.maxConcurrentSubagents}. Register and activate a task before mutation. Acquire one lease per subagent before launch and release it on completion or interruption.`,
+        text: `Governance gate: todo=${config.todoFile}; mutationAllowed=${mutationAllowed}; activeSubagents=${state.leases.length}/${config.maxConcurrentSubagents}. Register and activate an owned task before mutation. Subagents require an active lease; release it on completion or interruption.`,
       })
     })
 
