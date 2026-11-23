@@ -62,3 +62,15 @@
   - Validación: Bundle TypeScript, configuración JSON y casos dirigidos de candidato, variante, herencia y error.
   - Responsable: Agente primario
   - Evidencia: OpenCode V2 expuso los candidatos OpenAI configurados con variantes y tools; el resolver acepta respuestas planas o `{data}`, valida strings/objetos de variante y bloquea con `fallback: error`. Bundle TypeScript, JSON y `git diff --check` pasaron.
+
+- [x] **TRV-008 — Separar ownership y autorización por lease**
+  - Estado: completada
+  - Ámbito: Web
+  - Objetivo: Permitir correcciones delegadas sin transferir la propiedad de la tarea ni consumir intentos por bloqueos del propio flujo.
+  - Alcance: `template/.opencode/extensions/governance-gate/index.ts`, contratos del flujo y validaciones dirigidas.
+  - Fuera de alcance: Relajar el control de `todo.md`, permitir mutaciones a Planner/Validator o cambiar el límite de concurrencia.
+  - Dependencias: TRV-006.
+  - Criterios de aceptación: Un Executor con lease activo puede mutar durante `ejecutando`; sesiones sin lease y perfiles read-only no pueden; un BLOCKED de infraestructura no consume intentos ni bloquea la tarea.
+  - Validación: Bundle TypeScript, casos dirigidos de autorización/reintento y `git diff --check`.
+  - Responsable: Agente primario
+  - Evidencia: Un harness aislado confirmó mutación para Executor con lease, denegación para Validator y sesión sin lease, reintento con un Executor nuevo y BLOCKED sin consumir intentos. Bundle TypeScript, Bash y `git diff --check` pasaron.

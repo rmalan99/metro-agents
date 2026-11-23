@@ -26,6 +26,12 @@ type State = {
   recentAgents: Array<{ id: string; task: string; profile: string; model: string; status: string; finishedAt: string }>
 }
 
+type MutationAuthorization = {
+  allowed: boolean
+  reason: "manager-task" | "executor-lease" | "no-active-task" | "no-lease" | "read-only-profile" | "task-not-executing"
+  task?: string
+}
+
 type RoutingProfile = {
   candidates: string[]
   fallback: string
@@ -210,13 +216,31 @@ export default Plugin.define({
       await ctx.storage.set(stateKey, state)
       await rpcRegistration?.events.emit("updated", { revision, reason })
     }
-    const taskForSession = (sessionID: string) =>
-      getState().leases.find((lease) => lease.agent === sessionID)?.task
-      ?? Object.entries(getState().taskSessions).find(([, owner]) => owner === sessionID)?.[0]
-    const hasExecutingTask = (sessionID: string) => {
-      const task = taskForSession(sessionID)
-      const status = task ? readTaskStatus(todoPath, task) : undefined
-      return status === "ejecutando" || status === "verificando"
+    const mutationAuthorization = (sessionID: string): MutationAuthorization => {
+      const state = getState()
+      const lease = state.leases.find((item) => item.agent === sessionID)
+      if (lease) {
+        if (!lease.profile?.startsWith("executor")) {
+          return { allowed: false, reason: "read-only-profile", task: lease.task }
+        }
+        const status = readTaskStatus(todoPath, lease.task)
+        return status === "ejecutando"
+          ? { allowed: true, reason: "executor-lease", task: lease.task }
+          : { allowed: false, reason: "task-not-executing", task: lease.task }
+      }
+
+      const task = Object.entries(state.taskSessions).find(([, owner]) => owner === sessionID)?.[0]
+      if (task) {
+        const status = readTaskStatus(todoPath, task)
+        return status === "ejecutando" || status === "verificando"
+          ? { allowed: true, reason: "manager-task", task }
+          : { allowed: false, reason: "no-active-task", task }
+      }
+
+      return {
+        allowed: false,
+        reason: state.approvals[sessionID] ? "no-active-task" : "no-lease",
+      }
     }
 
     rpcRegistration = await ctx.rpc.register(GovernanceRpc, {
@@ -519,12 +543,16 @@ export default Plugin.define({
           const state = getState()
           const lease = state.leases.find((item) => item.agent === input.validatorSession && item.task === input.task)
           if (!lease?.profile?.includes("validator")) throw new Error("Verdict must come from an active Validator lease for the same task.")
-          const attempts = (state.validations[input.task]?.attempts ?? 0) + 1
+          const previousAttempts = state.validations[input.task]?.attempts ?? 0
+          const attempts = previousAttempts + (input.verdict === "BLOCKED" ? 0 : 1)
           state.validations[input.task] = { verdict: input.verdict, validator: input.validatorSession, report: input.report, attempts, recordedAt: new Date().toISOString() }
-          const exhausted = input.verdict !== "PASS" && attempts >= 2
+          const exhausted = input.verdict === "FAIL" && attempts >= 2
           if (exhausted) replaceTaskStatus(todoPath, input.task, "bloqueada")
           await setState(state, exhausted ? "validation-blocked" : `validation-${input.verdict.toLowerCase()}`)
-          return { content: `Recorded ${input.verdict} for ${input.task}; validation attempt ${attempts}.${input.verdict !== "PASS" && attempts >= 2 ? " Task blocked for user escalation." : ""}` }
+          const attemptReceipt = input.verdict === "BLOCKED"
+            ? `validation attempt not consumed; ${attempts} completed`
+            : `validation attempt ${attempts}`
+          return { content: `Recorded ${input.verdict} for ${input.task}; ${attemptReceipt}.${exhausted ? " Task blocked for user escalation." : ""}` }
         },
       })
     })
@@ -532,7 +560,9 @@ export default Plugin.define({
     await ctx.session.hook("context", async (event) => {
       if (!config.strict) return
       const state = getState()
-      const mutationAllowed = !config.requireTaskBeforeWrite || hasExecutingTask(event.sessionID)
+      const authorization = mutationAuthorization(event.sessionID)
+      const mutationAllowed = authorization.reason !== "read-only-profile"
+        && (!config.requireTaskBeforeWrite || authorization.allowed)
 
       for (const name of Object.keys(event.tools)) {
         const normalized = name.toLowerCase()
@@ -545,7 +575,7 @@ export default Plugin.define({
 
       event.system.push({
         type: "text",
-        text: `Governance gate: todo=${config.todoFile}; mutationAllowed=${mutationAllowed}; activeSubagents=${state.leases.length}/${config.maxConcurrentSubagents}. Register and activate an owned task before mutation. Subagents require an active lease; release it on completion or interruption.`,
+        text: `Governance gate: todo=${config.todoFile}; mutationAllowed=${mutationAllowed}; authorization=${authorization.reason}; task=${authorization.task ?? "none"}; activeSubagents=${state.leases.length}/${config.maxConcurrentSubagents}. Managers own task state; only an Executor lease authorizes delegated code mutation while its task is ejecutando. Planner and Validator leases are read-only. Release leases on completion or interruption.`,
       })
     })
 
